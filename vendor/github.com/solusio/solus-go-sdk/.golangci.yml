@@ -1,0 +1,148 @@
+run:
+  timeout: 1m
+  issues-exit-code: 1
+  tests: true
+  skip-dirs-use-default: true
+  modules-download-mode: readonly
+  allow-parallel-runners: true
+
+output:
+  format: line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  exhaustive:
+    check-generated: true
+    default-signifies-exhaustive: true
+
+  gocognit:
+    min-complexity: 10
+
+  nestif:
+    min-complexity: 3
+
+  staticcheck:
+    enable: true
+
+  goconst:
+    min-len: 3
+    min-occurrences: 2
+
+  gocyclo:
+    min-complexity: 10
+
+  godot:
+    # check all top-level comments, not only declarations
+    check-all: true
+
+  gofmt:
+    simplify: false
+
+  goimports:
+    # put imports beginning with prefix after 3rd-party packages;
+    # it's a comma-separated list of prefixes
+    local-prefixes: github.com/solusio/solus-go-sdk
+
+  govet:
+    check-shadowing: true
+    # settings per analyzer
+    settings:
+      printf: # analyzer name, run `go tool vet help` to see all analyzers
+        funcs: # run `go tool vet help printf` to see available settings for `printf` analyzer
+          - (github.com/solusio/solus-go-sdk.Logger).Debugf
+          - (github.com/solusio/solus-go-sdk.Logger).Errorf
+    enable-all: true
+    disable-all: false
+
+  lll:
+    line-length: 120
+    tab-width: 1
+
+  maligned:
+    suggest-new: true
+
+  misspell:
+    locale: US
+#    ignore-words:
+#      - someword
+
+  nakedret:
+    max-func-lines: 5
+
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: true
+
+  nolintlint:
+    allow-unused: false
+    allow-leading-space: true
+    allow-no-explanation: []
+    require-explanation: true
+    require-specific: true
+
+  unused:
+    check-exported: false
+
+  whitespace:
+    multi-if: true
+    multi-func: true
+
+  errorlint:
+    errorf: true
+
+linters:
+  enable:
+    - deadcode
+    - depguard
+    - dupl
+    - errcheck
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    - lll
+    - misspell
+    - nakedret
+    - scopelint
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+  disbale:
+    - megacheck
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+
+severity:
+  default-severity: error
+  case-sensitive: false
+  rules:
+    - linters:
+        - dupl
+      severity: info
