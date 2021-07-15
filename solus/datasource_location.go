@@ -40,17 +40,31 @@ func dataSourceLocationRead(ctx context.Context, d *schema.ResourceData, m inter
 		err error
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	if rawID, ok := d.GetOk("id"); ok {
-		id := rawID.(int)
+	rawID, hasRawID := d.GetOk("id")
+	rawName, hasRawName := d.GetOk("name")
+
+	// These two properties are mutually exclusive.
+	switch {
+	case hasRawID:
+		id, ok := rawID.(int)
+		if !ok {
+			return diagErr("Failed to get location by id", "Location ID isn't an integer")
+		}
+
 		l, err = client.Locations.Get(ctx, id)
 		if err != nil {
 			return diagErr("Failed to get location by id", err.Error())
 		}
-	} else if rawName, ok := d.GetOk("name"); ok {
-		name := rawName.(string)
+
+	case hasRawName:
+		name, ok := rawName.(string)
+		if !ok {
+			return diagErr("Failed to get location by name", "Location name isn't a string")
+		}
+
 		p, err := client.Locations.List(ctx, new(solus.FilterLocations).ByName(name))
 		if err != nil {
 			return diagErr("Failed to get location by name", err.Error())
@@ -68,7 +82,9 @@ func dataSourceLocationRead(ctx context.Context, d *schema.ResourceData, m inter
 	}
 
 	d.SetId(strconv.Itoa(l.ID))
-	locationToResourceData(l, d)
+	if err := locationToResourceData(l, d); err != nil {
+		return diagErr("Failed to map location response to resource", err.Error())
+	}
 
 	return nil
 }

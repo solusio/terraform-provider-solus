@@ -1,6 +1,6 @@
 module github.com/solusio/terraform-provider-solus
 
-go 1.15
+go 1.16
 
 require (
 	github.com/hashicorp/hcl/v2 v2.8.2 // indirect

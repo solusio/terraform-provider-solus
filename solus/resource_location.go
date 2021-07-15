@@ -82,7 +82,9 @@ func resourceLocationRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
-	locationToResourceData(l, d)
+	if err := locationToResourceData(l, d); err != nil {
+		return diagErr("Failed to map location response to resource", err.Error())
+	}
 
 	return nil
 }
@@ -138,12 +140,14 @@ func resourceLocationDelete(ctx context.Context, d *schema.ResourceData, m inter
 	return nil
 }
 
-func locationToResourceData(l solus.Location, d *schema.ResourceData) {
-	_ = d.Set("id", l.ID)
-	_ = d.Set("name", l.Name)
-	_ = d.Set("icon", l.Icon)
-	_ = d.Set("description", l.Description)
-	_ = d.Set("is_default", l.IsDefault)
-	_ = d.Set("is_visible", l.IsVisible)
-	_ = d.Set("compute_resources", l.ComputeResources)
+func locationToResourceData(l solus.Location, d *schema.ResourceData) error {
+	return (&schemaChainSetter{d: d}).
+		Set("id", l.ID).
+		Set("name", l.Name).
+		Set("icon", l.Icon).
+		Set("description", l.Description).
+		Set("is_default", l.IsDefault).
+		Set("is_visible", l.IsVisible).
+		Set("compute_resources", l.ComputeResources).
+		Error()
 }
