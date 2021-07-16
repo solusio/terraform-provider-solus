@@ -9,3 +9,10 @@ fast, on-demand VMs, a simple API, and an easy-to-use self-service control
 panel for your customers to unleash your full potential for growth.
 
 [Official site](https://www.solus.io/)
+
+Development
+-----------
+
+```shell script
+make init
+```

@@ -1,5 +1,6 @@
 NAME=solus
 BINARY=terraform-provider-${NAME}
+HOOK=hooks/pre-commit/main.go
 
 .PHONY: all
 all: fmt lint test build
@@ -19,3 +20,9 @@ test:
 .PHONY: build
 build:
 	go build -o ${BINARY}
+
+.PHONY: init
+init: init/hook
+
+init/hook: ${HOOK}
+	go build -o .git/hooks/pre-commit ${HOOK}
