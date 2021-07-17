@@ -1,4 +1,4 @@
-NAME=solus
+NAME=solusio
 BINARY=terraform-provider-${NAME}
 HOOK=hooks/pre-commit/main.go
 
