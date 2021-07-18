@@ -88,9 +88,18 @@ linters-settings:
   gofmt:
     simplify: false
 
+  goimports:
+    # Put imports beginning with prefix after 3rd-party packages.
+    # It's a comma-separated list of prefixes.
+    local-prefixes: github.com/solusio/terraform-provider-solus
+
   govet:
     # We have many false-positive match for `err`.
     check-shadowing: false
+    settings:
+      printf:
+        funcs:
+          - github.com/hashicorp/terraform-plugin-sdk/v2/diag.Errorf
     enable:
       - assign
       - atomic
@@ -268,6 +277,8 @@ linters:
     # Checks is file header matches to pattern.
     - goheader
 
+    - goimports
+
     # Manage the use of 'replace', 'retract', and 'excludes' directives in go.mod.
     - gomoddirectives
 
@@ -408,6 +419,11 @@ issues:
     # in this case. Many other providers do the same.
     - source: 'd\.Get(Ok)?\(".*"\)\.\(\w*\)'
       text: "Error return value is not checked"
+
+    # All data sources looks similar but it's not true.
+    - path: datasource_.*\.go
+      linters:
+        - dupl
 
 severity:
   default-severity: error

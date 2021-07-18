@@ -88,7 +88,7 @@ github.com/mitchellh/reflectwalk
 github.com/oklog/run
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/solusio/solus-go-sdk v0.0.0-20210112150242-ca734704666f
+# github.com/solusio/solus-go-sdk v0.0.0-20210717123948-76e2b1819916
 ## explicit
 github.com/solusio/solus-go-sdk
 # github.com/stretchr/testify v1.6.1
@@ -218,6 +218,7 @@ google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/emptypb
 google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/guregu/null.v4 v4.0.0
+## explicit
 gopkg.in/guregu/null.v4
 # gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 gopkg.in/yaml.v3

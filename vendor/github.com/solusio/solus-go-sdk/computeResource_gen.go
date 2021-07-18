@@ -29,7 +29,7 @@ import (
 //  if resp.Err() != nil {
 //		handleAnError(resp.Err())
 //	}
-func (r *IPBlocksResponse) Next(ctx context.Context) bool {
+func (r *ComputeResourcesPaginatedResponse) Next(ctx context.Context) bool {
 	if (r.Meta.LastPage == r.Meta.CurrentPage) || (r.err != nil) {
 		return false
 	}

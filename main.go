@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/solusio/terraform-provider-solus/solus"
 	"log"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+
+	"github.com/solusio/terraform-provider-solus/solus"
 )
 
 func main() {

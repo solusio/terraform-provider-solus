@@ -24,16 +24,17 @@ type TaskAction string
 
 const (
 	// actions
-	ServerActionCreate         TaskAction = "vm-create"
-	ServerActionReinstall      TaskAction = "vm-reinstall"
-	ServerActionDelete         TaskAction = "vm-delete"
-	ServerActionUpdate         TaskAction = "vm-update"
-	ServerActionPasswordChange TaskAction = "vm-password-change"
-	ServerActionStart          TaskAction = "vm-start"
-	ServerActionStop           TaskAction = "vm-stop"
-	ServerActionRestart        TaskAction = "vm-restart"
-	ServerActionSuspend        TaskAction = "vm-suspend"
-	ServerActionResume         TaskAction = "vm-resume"
+	ServerActionCreate              TaskAction = "vm-create"
+	ServerActionReinstall           TaskAction = "vm-reinstall"
+	ServerActionDelete              TaskAction = "vm-delete"
+	ServerActionUpdate              TaskAction = "vm-update"
+	ServerActionPasswordChange      TaskAction = "vm-password-change"
+	ServerActionStart               TaskAction = "vm-start"
+	ServerActionStop                TaskAction = "vm-stop"
+	ServerActionRestart             TaskAction = "vm-restart"
+	ServerActionSuspend             TaskAction = "vm-suspend"
+	ServerActionResume              TaskAction = "vm-resume"
+	ComputeResourceConfigureNetwork TaskAction = "configure network"
 )
 
 type Task struct {

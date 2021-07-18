@@ -15,7 +15,7 @@ type LocationCreateRequest struct {
 	IconID           null.Int `json:"icon_id"`
 	IsDefault        bool     `json:"is_default"`
 	IsVisible        bool     `json:"is_visible"`
-	ComputeResources []int    `json:"compute_resources"`
+	ComputeResources []int    `json:"compute_resources,omitempty"`
 }
 
 type Location struct {

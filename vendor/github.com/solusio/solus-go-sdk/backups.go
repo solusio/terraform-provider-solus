@@ -8,11 +8,11 @@ import (
 
 type BackupsService service
 
-type BackupType string
+type BackupCreationMethod string
 
 const (
-	BackupTypeAuto   BackupType = "auto"
-	BackupTypeManual BackupType = "manual"
+	BackupCreationMethodAuto   BackupCreationMethod = "auto"
+	BackupCreationMethodManual BackupCreationMethod = "manual"
 )
 
 type BackupStatus string
@@ -25,17 +25,17 @@ const (
 )
 
 type Backup struct {
-	ID                int          `json:"id"`
-	Type              BackupType   `json:"type"`
-	Status            BackupStatus `json:"status"`
-	Size              float32      `json:"size"`
-	ComputeResourceVM Server       `json:"compute_resource_vm"`
-	BackupNode        BackupNode   `json:"backup_node"`
-	Creator           User         `json:"creator"`
-	CreatedAt         string       `json:"created_at"`
-	BackupProgress    float32      `json:"backup_progress"`
-	BackupFailReason  string       `json:"backup_fail_reason"`
-	Disk              int          `json:"disk"`
+	ID                int                  `json:"id"`
+	CreationMethod    BackupCreationMethod `json:"creation_method"`
+	Status            BackupStatus         `json:"status"`
+	Size              float32              `json:"size"`
+	ComputeResourceVM Server               `json:"compute_resource_vm"`
+	BackupNode        BackupNode           `json:"backup_node"`
+	Creator           User                 `json:"creator"`
+	CreatedAt         string               `json:"created_at"`
+	BackupProgress    float32              `json:"backup_progress"`
+	BackupFailReason  string               `json:"backup_fail_reason"`
+	Disk              int                  `json:"disk"`
 }
 
 func (b Backup) IsFinished() bool {

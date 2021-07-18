@@ -23,7 +23,7 @@ client, err := solus.NewClient(baseURL, solus.EmailAndPasswordAuthenticator{
 Or
 
 ```go
-client, err := solus.NewClient(baseURL, solus.ApiTokenAuthenticator{Token: "api token"})
+client, err := solus.NewClient(baseURL, solus.APITokenAuthenticator{Token: "api token"})
 ```
 
 Development

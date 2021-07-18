@@ -2,23 +2,22 @@ package solus
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-)
+	"strconv"
 
-func diagErr(summary string, detailsFormat string, args ...interface{}) diag.Diagnostics {
-	return diag.Diagnostics{
-		diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  summary,
-			Detail:   fmt.Sprintf(detailsFormat, args...),
-		},
-	}
-}
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"gopkg.in/guregu/null.v4"
+)
 
 type schemaChainSetter struct {
 	d   *schema.ResourceData
 	err error
+}
+
+func (s *schemaChainSetter) SetID(v int) *schemaChainSetter {
+	if s.err == nil {
+		s.d.SetId(strconv.Itoa(v))
+	}
+	return s
 }
 
 func (s *schemaChainSetter) Set(k string, v interface{}) *schemaChainSetter {
@@ -34,4 +33,9 @@ func (s *schemaChainSetter) Set(k string, v interface{}) *schemaChainSetter {
 
 func (s *schemaChainSetter) Error() error {
 	return s.err
+}
+
+func newNullableIntForID(i int) null.Int {
+	// Because valid ID can't be null.
+	return null.NewInt(int64(i), i != 0)
 }

@@ -1,4 +1,4 @@
-//go:generate go run paginatorgen.go
+//go:generate go run generators/paginatorgen.go
 
 package solus
 
@@ -23,22 +23,24 @@ type Client struct {
 	s service
 
 	Account           *AccountService
+	Applications      *ApplicationsService
 	BackupNodes       *BackupNodesService
 	Backups           *BackupsService
 	ComputeResources  *ComputeResourcesService
 	IPBlocks          *IPBlocksService
+	Icons             *IconsService
 	License           *LicenseService
 	Locations         *LocationsService
 	OsImages          *OsImagesService
-	Applications      *ApplicationsService
+	Permission        *PermissionsService
 	Plans             *PlansService
 	Projects          *ProjectsService
 	Roles             *RolesService
-	Storage           *StorageService
+	SSHKeys           *SSHKeysService
 	Servers           *ServersService
 	ServersMigrations *ServersMigrationsService
+	Storage           *StorageService
 	StorageTypes      *StorageTypesService
-	SSHKeys           *SSHKeysService
 	Tasks             *TasksService
 	Users             *UsersService
 }
@@ -49,14 +51,14 @@ type service struct {
 
 // Authenticator interface for client authentication.
 type Authenticator interface {
-	// Authenticate authenticate client on SOLUS IO and return credentials
+	// Authenticate authenticate client and return credentials
 	// which should be used for making further API calls.
 	// The Client is fully initialized. Any endpoints which is not requires
 	// authentication may be called.
 	Authenticate(c *Client) (Credentials, error)
 }
 
-// EmailAndPasswordAuthenticator authenticate at SOLUS IO with specified email
+// EmailAndPasswordAuthenticator authenticate with specified email
 // and password.
 type EmailAndPasswordAuthenticator struct {
 	Email    string
@@ -74,7 +76,7 @@ func (a EmailAndPasswordAuthenticator) Authenticate(c *Client) (Credentials, err
 	return resp.Credentials, nil
 }
 
-// APITokenAuthenticator authenticate at SOLUS IO by provided API token.
+// APITokenAuthenticator authenticate by provided API token.
 type APITokenAuthenticator struct {
 	Token string
 }
@@ -107,7 +109,7 @@ func SetRetryPolicy(retries int, retryAfter time.Duration) ClientOption {
 	}
 }
 
-// AllowInsecure allow to skip certificate verify.
+// WithLogger inject specific logger into client.
 func WithLogger(logger Logger) ClientOption {
 	return func(c *Client) {
 		c.Logger = logger
@@ -122,7 +124,7 @@ func NewClient(
 ) (*Client, error) {
 	client := &Client{
 		BaseURL:   baseURL,
-		UserAgent: "solus.io Go client",
+		UserAgent: "Go SDK client",
 		Headers: map[string][]string{
 			"Accept":       {"application/json"},
 			"Content-Type": {"application/json"},
@@ -149,23 +151,26 @@ func NewClient(
 	client.Headers["Authorization"] = []string{client.Credentials.TokenType + " " + client.Credentials.AccessToken}
 
 	client.s.client = client
+
 	client.Account = (*AccountService)(&client.s)
+	client.Applications = (*ApplicationsService)(&client.s)
 	client.BackupNodes = (*BackupNodesService)(&client.s)
 	client.Backups = (*BackupsService)(&client.s)
 	client.ComputeResources = (*ComputeResourcesService)(&client.s)
 	client.IPBlocks = (*IPBlocksService)(&client.s)
+	client.Icons = (*IconsService)(&client.s)
 	client.License = (*LicenseService)(&client.s)
 	client.Locations = (*LocationsService)(&client.s)
 	client.OsImages = (*OsImagesService)(&client.s)
-	client.Applications = (*ApplicationsService)(&client.s)
+	client.Permission = (*PermissionsService)(&client.s)
 	client.Plans = (*PlansService)(&client.s)
 	client.Projects = (*ProjectsService)(&client.s)
 	client.Roles = (*RolesService)(&client.s)
-	client.Storage = (*StorageService)(&client.s)
+	client.SSHKeys = (*SSHKeysService)(&client.s)
 	client.Servers = (*ServersService)(&client.s)
 	client.ServersMigrations = (*ServersMigrationsService)(&client.s)
+	client.Storage = (*StorageService)(&client.s)
 	client.StorageTypes = (*StorageTypesService)(&client.s)
-	client.SSHKeys = (*SSHKeysService)(&client.s)
 	client.Tasks = (*TasksService)(&client.s)
 	client.Users = (*UsersService)(&client.s)
 

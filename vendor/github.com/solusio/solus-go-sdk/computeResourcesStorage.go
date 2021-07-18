@@ -6,10 +6,10 @@ import (
 )
 
 type ComputeResourceStorageCreateRequest struct {
-	TypeID                  int    `json:"type_id"`
-	Path                    string `json:"path"`
-	ThinPool                string `json:"thin_pool,omitempty"`
-	IsAvailableForBalancing bool   `json:"is_available_for_balancing"`
+	Type                    StorageTypeName `json:"type"`
+	Path                    string          `json:"path"`
+	ThinPool                string          `json:"thin_pool,omitempty"`
+	IsAvailableForBalancing bool            `json:"is_available_for_balancing"`
 }
 
 func (s *ComputeResourcesService) StorageCreate(

@@ -57,7 +57,28 @@ linters-settings:
         funcs: # run `go tool vet help printf` to see available settings for `printf` analyzer
           - (github.com/solusio/solus-go-sdk.Logger).Debugf
           - (github.com/solusio/solus-go-sdk.Logger).Errorf
-    enable-all: true
+    enable:
+      - assign
+      - atomic
+      - bools
+      - buildtag
+      - cgocall
+      - copylocks
+      - errorsas
+      - httpresponse
+      - loopclosure
+      - lostcancel
+      - nilfunc
+      - printf
+      - shift
+      - stdmethods
+      - structtag
+      - tests
+      - unmarshal
+      - unreachable
+      - unsafeptr
+      - unusedresult
+    enable-all: false
     disable-all: false
 
   lll:
@@ -114,7 +135,6 @@ linters:
     - gosimple
     - govet
     - ineffassign
-    - interfacer
     - lll
     - misspell
     - nakedret

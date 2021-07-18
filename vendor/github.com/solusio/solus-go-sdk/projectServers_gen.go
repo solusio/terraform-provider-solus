@@ -16,16 +16,21 @@ import (
 //	ctx, cancelFunc := context.WithTimeout(context.Background(), 30 * time.Second)
 //	defer cancelFunc()
 //
-//	for resp.Next(ctx) {
-//		for _, user := range resp.Data {
-//			doSmthWithAUser(user)
+//  for {
+//		for _, datum := range resp.Data {
+//			doSmthWithDatum(datum)
+//		}
+//
+//		if !resp.Next(ctx) {
+//			break
 //		}
 //	}
+//
 //  if resp.Err() != nil {
 //		handleAnError(resp.Err())
 //	}
 func (r *ProjectServersResponse) Next(ctx context.Context) bool {
-	if (r.Links.Next == "") || (r.err != nil) {
+	if (r.Meta.LastPage == r.Meta.CurrentPage) || (r.err != nil) {
 		return false
 	}
 

@@ -95,6 +95,7 @@ type ServerBackupSettingsSchedule struct {
 type ServerBackupSettings struct {
 	Enabled  bool                         `json:"enabled,omitempty"`
 	Schedule ServerBackupSettingsSchedule `json:"schedule,omitempty"`
+	Limit    UnitPlanLimit                `json:"limit,omitempty"`
 }
 
 type ServersResponse struct {
@@ -147,6 +148,27 @@ func (s *ServersService) Backup(ctx context.Context, id int) (Backup, error) {
 	}
 
 	var resp backupResponse
+	return resp.Data, unmarshal(body, &resp)
+}
+
+type ServerResizeRequest struct {
+	PreserveDisk   bool                  `json:"preserve_disk"`
+	PlanID         int                   `json:"plan_id"`
+	BackupSettings *ServerBackupSettings `json:"backup_settings,omitempty"`
+}
+
+func (s *ServersService) Resize(ctx context.Context, id int, data ServerResizeRequest) (Task, error) {
+	path := fmt.Sprintf("servers/%d/resize", id)
+	body, code, err := s.client.request(ctx, http.MethodPost, path, withBody(data))
+	if err != nil {
+		return Task{}, err
+	}
+
+	if code != http.StatusOK {
+		return Task{}, newHTTPError(http.MethodPost, path, code, body)
+	}
+
+	var resp taskResponse
 	return resp.Data, unmarshal(body, &resp)
 }
 

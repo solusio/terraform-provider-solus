@@ -8,20 +8,22 @@ import (
 
 type ComputeResourcesService service
 
+type ComputerResourceStatus string
+
 const (
-	ComputeResourceStatusActive           = "active"
-	ComputeResourceStatusCommissioning    = "commissioning"
-	ComputeResourceStatusConfigureNetwork = "configure_network"
-	ComputeResourceStatusFailed           = "failed"
-	ComputeResourceStatusUnavailable      = "unavailable"
+	ComputeResourceStatusActive           ComputerResourceStatus = "active"
+	ComputeResourceStatusCommissioning    ComputerResourceStatus = "commissioning"
+	ComputeResourceStatusConfigureNetwork ComputerResourceStatus = "configure_network"
+	ComputeResourceStatusFailed           ComputerResourceStatus = "failed"
+	ComputeResourceStatusUnavailable      ComputerResourceStatus = "unavailable"
 )
 
 type ComputeResourceBalanceStrategy string
 
 const (
-	ComputeResourceBalanceStrategyRoundRobin         ComputeResourceBalanceStrategy = "round-robin"
-	ComputeResourceBalanceStrategyRandom             ComputeResourceBalanceStrategy = "random"
-	ComputeResourceBalanceStrategyMostSpaceAvailable ComputeResourceBalanceStrategy = "most-space-available"
+	ComputeResourceBalanceStrategyRoundRobin           ComputeResourceBalanceStrategy = "round-robin"
+	ComputeResourceBalanceStrategyRandom               ComputeResourceBalanceStrategy = "random"
+	ComputeResourceBalanceStrategyMostStorageAvailable ComputeResourceBalanceStrategy = "most-storage-available"
 )
 
 type ComputeResource struct {
@@ -97,11 +99,6 @@ type ComputeResourceNetwork struct {
 	MaskSize     int    `json:"mask_size"`
 }
 
-type ComputerResourceStatus struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
 type ComputeResourceAuthType string
 
 const (
@@ -122,6 +119,11 @@ type ComputerResourceCreateRequest struct {
 	AgentPort int    `json:"agent_port,omitempty"`
 	IPBlocks  []int  `json:"ip_blocks,omitempty"`
 	Locations []int  `json:"locations,omitempty"`
+}
+
+type SetupNetworkRequest struct {
+	ID   string                             `json:"id"`
+	Type ComputeResourceSettingsNetworkType `json:"type"`
 }
 
 type ComputeResourcePhysicalVolume struct {
@@ -216,12 +218,7 @@ func (s *ComputeResourcesService) Networks(ctx context.Context, id int) ([]Compu
 	return resp.Data, s.client.get(ctx, fmt.Sprintf("compute_resources/%d/networks", id), &resp)
 }
 
-func (s *ComputeResourcesService) SetUpNetwork(ctx context.Context, id int, networkID string) error {
-	data := struct {
-		ID string `json:"id"`
-	}{
-		ID: networkID,
-	}
+func (s *ComputeResourcesService) SetUpNetwork(ctx context.Context, id int, data SetupNetworkRequest) error {
 	path := fmt.Sprintf("compute_resources/%d/setup_network", id)
 	body, code, err := s.client.request(ctx, http.MethodPost, path, withBody(data))
 	if err != nil {

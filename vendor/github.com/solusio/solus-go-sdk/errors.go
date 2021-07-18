@@ -3,6 +3,7 @@ package solus
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 type HTTPError struct {
@@ -29,4 +30,15 @@ func newHTTPError(method, path string, httpCode int, body []byte) error {
 	}
 
 	return e
+}
+
+// IsNotFound returns true if specified error is produced 'cause requested resource
+// is not found.
+func IsNotFound(err error) bool {
+	httpErr, ok := err.(HTTPError)
+	if !ok {
+		return false
+	}
+
+	return httpErr.HTTPCode == http.StatusNotFound
 }

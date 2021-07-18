@@ -48,6 +48,18 @@ func BackupNodeSSHRsyncCredentials(
 	}
 }
 
+func BackupNodeHetznerStorageBoxCredentials(
+	host string,
+	login string,
+	key string,
+) map[string]interface{} {
+	return map[string]interface{}{
+		"host":  host,
+		"login": login,
+		"key":   key,
+	}
+}
+
 type backupNodeResponse struct {
 	Data BackupNode `json:"data"`
 }
