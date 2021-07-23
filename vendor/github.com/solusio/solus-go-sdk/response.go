@@ -27,7 +27,7 @@ type paginatedResponse struct {
 	service *service
 }
 
-// Run `go generate` to add `Next()` method to all required structs
+// Run `go generate` to add `Next()` method to all required structs.
 
 // Err return an error which is occurred during fetching next page data.
 func (r *paginatedResponse) Err() error {

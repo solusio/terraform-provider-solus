@@ -132,7 +132,7 @@ func (c *Client) request(ctx context.Context, method, path string, opts ...reque
 
 	var resp *http.Response
 	err = retry(func(attempt int) (bool, error) {
-		var err error //nolint:govet
+		var err error
 		resp, err = c.HTTPClient.Do(req)
 
 		checkOk, checkErr := checkForRetry(resp, err)
@@ -152,7 +152,7 @@ func (c *Client) request(ctx context.Context, method, path string, opts ...reque
 		return nil, 0, err
 	}
 	defer func() {
-		if err := resp.Body.Close(); err != nil { //nolint:govet
+		if err := resp.Body.Close(); err != nil {
 			c.Logger.Errorf("failed to close response body for %s %s: %s", method, path, err)
 		}
 	}()

@@ -50,12 +50,10 @@ func resourceLocation() *schema.Resource {
 }
 
 func resourceLocationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	metadata, ok := m.(metadata)
+	client, ok := m.(*solus.Client)
 	if !ok {
-		return diag.Errorf("invalid metadata type %T", m)
+		return diag.Errorf("invalid Solus client type %T", m)
 	}
-	client := metadata.Client
-	timeout := metadata.RequestTimeout
 
 	name := d.Get("name").(string)
 	description := d.Get("description").(string)
@@ -63,10 +61,7 @@ func resourceLocationCreate(ctx context.Context, d *schema.ResourceData, m inter
 	isDefault := d.Get("is_default").(bool)
 	isVisible := d.Get("is_visible").(bool)
 
-	reqCtx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	l, err := client.Locations.Create(reqCtx, solus.LocationCreateRequest{
+	l, err := client.Locations.Create(ctx, solus.LocationCreateRequest{
 		Name:        name,
 		Description: description,
 		IconID:      newNullableIntForID(iconID),
@@ -82,22 +77,17 @@ func resourceLocationCreate(ctx context.Context, d *schema.ResourceData, m inter
 }
 
 func resourceLocationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	metadata, ok := m.(metadata)
+	client, ok := m.(*solus.Client)
 	if !ok {
-		return diag.Errorf("invalid metadata type %T", m)
+		return diag.Errorf("invalid Solus client type %T", m)
 	}
-	client := metadata.Client
-	timeout := metadata.RequestTimeout
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	reqCtx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	l, err := client.Locations.Get(reqCtx, id)
+	l, err := client.Locations.Get(ctx, id)
 	if err != nil {
 		return diag.Errorf("failed to get location by id %d: %s", id, err)
 	}
@@ -118,12 +108,10 @@ func resourceLocationRead(ctx context.Context, d *schema.ResourceData, m interfa
 }
 
 func resourceLocationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	metadata, ok := m.(metadata)
+	client, ok := m.(*solus.Client)
 	if !ok {
-		return diag.Errorf("invalid metadata type %T", m)
+		return diag.Errorf("invalid Solus client type %T", m)
 	}
-	client := metadata.Client
-	timeout := metadata.RequestTimeout
 
 	name := d.Get("name").(string)
 	description := d.Get("description").(string)
@@ -136,10 +124,7 @@ func resourceLocationUpdate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 
-	reqCtx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	l, err := client.Locations.Update(reqCtx, id, solus.LocationCreateRequest{
+	l, err := client.Locations.Update(ctx, id, solus.LocationCreateRequest{
 		Name:        name,
 		Description: description,
 		IconID:      newNullableIntForID(iconID),
@@ -155,22 +140,17 @@ func resourceLocationUpdate(ctx context.Context, d *schema.ResourceData, m inter
 }
 
 func resourceLocationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	metadata, ok := m.(metadata)
+	client, ok := m.(*solus.Client)
 	if !ok {
-		return diag.Errorf("invalid metadata type %T", m)
+		return diag.Errorf("invalid Solus client type %T", m)
 	}
-	client := metadata.Client
-	timeout := metadata.RequestTimeout
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	reqCtx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	err = client.Locations.Delete(reqCtx, id)
+	err = client.Locations.Delete(ctx, id)
 	if err != nil {
 		return diag.Errorf("failed to delete location by id %d: %s", id, err)
 	}

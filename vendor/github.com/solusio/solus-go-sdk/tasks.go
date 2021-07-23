@@ -10,7 +10,6 @@ type TasksService service
 type TaskStatus string
 
 const (
-	// status
 	TaskStatusPending        TaskStatus = "pending"
 	TaskStatusQueued         TaskStatus = "queued"
 	TaskStatusRunning        TaskStatus = "running"
@@ -23,7 +22,6 @@ const (
 type TaskAction string
 
 const (
-	// actions
 	ServerActionCreate              TaskAction = "vm-create"
 	ServerActionReinstall           TaskAction = "vm-reinstall"
 	ServerActionDelete              TaskAction = "vm-delete"
@@ -70,7 +68,7 @@ type taskResponse struct {
 	Data Task `json:"data"`
 }
 
-// Tasks return list of Task, filter can be nil
+// List return list of Task, filter can be nil.
 func (s *TasksService) List(ctx context.Context, filter *FilterTasks) (TasksResponse, error) {
 	resp := TasksResponse{
 		paginatedResponse: paginatedResponse{

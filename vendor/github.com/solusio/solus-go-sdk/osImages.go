@@ -3,6 +3,8 @@ package solus
 import (
 	"context"
 	"fmt"
+
+	"gopkg.in/guregu/null.v4"
 )
 
 type OsImagesService service
@@ -13,27 +15,14 @@ type OsImage struct {
 	Icon      Icon             `json:"icon"`
 	Versions  []OsImageVersion `json:"versions,omitempty"`
 	IsDefault bool             `json:"is_default,omitempty"`
+	IsVisible bool             `json:"is_visible,omitempty"`
+	Position  float32          `json:"position"`
 }
 
-type OsImageVersion struct {
-	ID               int     `json:"id"`
-	Position         float64 `json:"position"`
-	Version          string  `json:"version"`
-	URL              string  `json:"url"`
-	CloudInitVersion string  `json:"cloud_init_version"`
-}
-
-type OsImageCreateRequest struct {
-	Name      string `json:"name"`
-	Icon      string `json:"icon"`
-	IsVisible bool   `json:"is_visible"`
-}
-
-type OsImageVersionRequest struct {
-	Position         float64 `json:"position"`
-	Version          string  `json:"version"`
-	URL              string  `json:"url"`
-	CloudInitVersion string  `json:"cloud_init_version"`
+type OsImageRequest struct {
+	Name      string   `json:"name"`
+	IconID    null.Int `json:"icon_id"`
+	IsVisible bool     `json:"is_visible"`
 }
 
 type OsImagesResponse struct {
@@ -42,33 +31,50 @@ type OsImagesResponse struct {
 	Data []OsImage `json:"data"`
 }
 
-func (s *OsImagesService) List(ctx context.Context) (OsImagesResponse, error) {
+type osImageResponse struct {
+	Data OsImage `json:"data"`
+}
+
+func (s *OsImagesService) List(ctx context.Context, filter *FilterOsImages) (OsImagesResponse, error) {
 	resp := OsImagesResponse{
 		paginatedResponse: paginatedResponse{
 			service: (*service)(s),
 		},
 	}
-	return resp, s.client.list(ctx, "os_images", &resp)
+	return resp, s.client.list(ctx, "os_images", &resp, withFilter(filter.data))
 }
 
-func (s *OsImagesService) Create(ctx context.Context, data OsImageCreateRequest) (OsImage, error) {
-	var resp struct {
-		Data OsImage `json:"data"`
-	}
+func (s *OsImagesService) Get(ctx context.Context, id int) (OsImage, error) {
+	var resp osImageResponse
+	return resp.Data, s.client.get(ctx, fmt.Sprintf("os_images/%d", id), &resp)
+}
+
+func (s *OsImagesService) Create(ctx context.Context, data OsImageRequest) (OsImage, error) {
+	var resp osImageResponse
 	return resp.Data, s.client.create(ctx, "os_images", data, &resp)
+}
+
+func (s *OsImagesService) Update(ctx context.Context, id int, data OsImageRequest) (OsImage, error) {
+	var resp osImageResponse
+	return resp.Data, s.client.update(ctx, fmt.Sprintf("os_images/%d", id), data, &resp)
 }
 
 func (s *OsImagesService) Delete(ctx context.Context, id int) error {
 	return s.client.delete(ctx, fmt.Sprintf("os_images/%d", id))
 }
 
-func (s *OsImagesService) OsImageVersionCreate(
+func (s *OsImagesService) CreateVersion(
 	ctx context.Context,
 	osImageID int,
 	data OsImageVersionRequest,
 ) (OsImageVersion, error) {
-	var resp struct {
-		Data OsImageVersion `json:"data"`
-	}
+	var resp osImageVersionResponse
 	return resp.Data, s.client.create(ctx, fmt.Sprintf("os_images/%d/versions", osImageID), data, &resp)
+}
+
+func (s *OsImagesService) ListVersion(ctx context.Context, osImageID int) ([]OsImageVersion, error) {
+	var resp struct {
+		Data []OsImageVersion `json:"data"`
+	}
+	return resp.Data, s.client.list(ctx, fmt.Sprintf("os_images/%d/versions", osImageID), &resp)
 }

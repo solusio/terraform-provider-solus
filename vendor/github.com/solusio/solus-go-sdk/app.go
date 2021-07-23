@@ -31,6 +31,7 @@ type Client struct {
 	Icons             *IconsService
 	License           *LicenseService
 	Locations         *LocationsService
+	OsImageVersions   *OsImageVersionsService
 	OsImages          *OsImagesService
 	Permission        *PermissionsService
 	Plans             *PlansService
@@ -97,7 +98,7 @@ type ClientOption func(c *Client)
 // AllowInsecure allows to skip certificate verify.
 func AllowInsecure() ClientOption {
 	return func(c *Client) {
-		c.HTTPClient.Transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
+		c.HTTPClient.Transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec // We should give an ability to disable cert check.
 	}
 }
 
@@ -161,6 +162,7 @@ func NewClient(
 	client.Icons = (*IconsService)(&client.s)
 	client.License = (*LicenseService)(&client.s)
 	client.Locations = (*LocationsService)(&client.s)
+	client.OsImageVersions = (*OsImageVersionsService)(&client.s)
 	client.OsImages = (*OsImagesService)(&client.s)
 	client.Permission = (*PermissionsService)(&client.s)
 	client.Plans = (*PlansService)(&client.s)

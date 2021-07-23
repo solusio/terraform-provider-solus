@@ -33,20 +33,15 @@ func dataSourceLocation() *schema.Resource {
 }
 
 func dataSourceLocationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	metadata, ok := m.(metadata)
+	client, ok := m.(*solus.Client)
 	if !ok {
-		return diag.Errorf("invalid metadata type %T", m)
+		return diag.Errorf("invalid Solus client type %T", m)
 	}
-	client := metadata.Client
-	timeout := metadata.RequestTimeout
 
 	var (
 		res solus.Location
 		err error
 	)
-
-	ctx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
 
 	rawID, hasRawID := d.GetOk("id")
 	rawName, hasRawName := d.GetOk("name")

@@ -10,21 +10,21 @@ import (
 	"github.com/solusio/solus-go-sdk"
 )
 
-func dataSourceIcon() *schema.Resource {
+func dataSourceOsImage() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceIconRead,
+		ReadContext: dataSourceOsImageRead,
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:         schema.TypeInt,
 				Optional:     true,
-				Description:  "id of the icon",
+				Description:  "id of the os image",
 				ValidateFunc: validation.NoZeroValues,
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "name of the icon",
+				Description:  "name of the os image",
 				ValidateFunc: validation.NoZeroValues,
 				ExactlyOneOf: []string{"id", "name"},
 			},
@@ -32,14 +32,14 @@ func dataSourceIcon() *schema.Resource {
 	}
 }
 
-func dataSourceIconRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceOsImageRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	client, ok := m.(*solus.Client)
 	if !ok {
 		return diag.Errorf("invalid Solus client type %T", m)
 	}
 
 	var (
-		res solus.Icon
+		res solus.OsImage
 		err error
 	)
 
@@ -54,9 +54,9 @@ func dataSourceIconRead(ctx context.Context, d *schema.ResourceData, m interface
 			return diag.Errorf("id isn't an integer")
 		}
 
-		res, err = client.Icons.Get(ctx, id)
+		res, err = client.OsImages.Get(ctx, id)
 		if err != nil {
-			return diag.Errorf("failed to get icon by id %d: %s", id, err)
+			return diag.Errorf("failed to get os image by id %d: %s", id, err)
 		}
 
 	case hasRawName:
@@ -65,17 +65,17 @@ func dataSourceIconRead(ctx context.Context, d *schema.ResourceData, m interface
 			return diag.Errorf("name isn't a string")
 		}
 
-		p, err := client.Icons.List(ctx, new(solus.FilterIcons).ByName(name))
+		p, err := client.OsImages.List(ctx, new(solus.FilterOsImages).ByName(name))
 		if err != nil {
-			return diag.Errorf("failed to get icon by name %q: %s", name, err)
+			return diag.Errorf("failed to get os image by name %q: %s", name, err)
 		}
 
 		if len(p.Data) == 0 {
-			return diag.Errorf("icon not found")
+			return diag.Errorf("os image not found")
 		}
 
 		if len(p.Data) > 1 {
-			return diag.Errorf("find more than one icon")
+			return diag.Errorf("find more than one os image")
 		}
 
 		res = p.Data[0]

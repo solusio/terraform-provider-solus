@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/hashicorp/hcl/v2 v2.8.2 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.0
-	github.com/solusio/solus-go-sdk v0.0.0-20210717123948-76e2b1819916
+	github.com/solusio/solus-go-sdk v0.0.0-20210723023722-4cb2b796e9db
 	github.com/stretchr/testify v1.6.1
 	github.com/zclconf/go-cty v1.7.1 // indirect
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect

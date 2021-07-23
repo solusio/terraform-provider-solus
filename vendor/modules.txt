@@ -88,7 +88,7 @@ github.com/mitchellh/reflectwalk
 github.com/oklog/run
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/solusio/solus-go-sdk v0.0.0-20210717123948-76e2b1819916
+# github.com/solusio/solus-go-sdk v0.0.0-20210723023722-4cb2b796e9db
 ## explicit
 github.com/solusio/solus-go-sdk
 # github.com/stretchr/testify v1.6.1

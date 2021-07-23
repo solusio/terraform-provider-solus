@@ -104,7 +104,7 @@ type ServersResponse struct {
 	Data []Server `json:"data"`
 }
 
-// Servers return list of server, filter can be nil
+// List return list of server, filter can be nil.
 func (s *ServersService) List(ctx context.Context, filter *FilterServers) (ServersResponse, error) {
 	resp := ServersResponse{
 		paginatedResponse: paginatedResponse{
