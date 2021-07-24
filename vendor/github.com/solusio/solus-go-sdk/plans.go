@@ -13,6 +13,11 @@ type PlanParams struct {
 	VCPU int `json:"vcpu"`
 }
 
+type PlanBackupSettings struct {
+	IsIncrementalBackupEnabled bool `json:"is_incremental_backup_enabled"`
+	IncrementalBackupsLimit    int  `json:"incremental_backups_limit"`
+}
+
 type DiskBandwidthPlanLimit struct {
 	IsEnabled bool                       `json:"is_enabled"`
 	Limit     int                        `json:"limit"`
@@ -156,6 +161,7 @@ type Plan struct {
 	IsSnapshotAvailable     bool                        `json:"is_snapshot_available"`
 	IsSnapshotsEnabled      bool                        `json:"is_snapshots_enabled"`
 	IsBackupAvailable       bool                        `json:"is_backup_available"`
+	BackupSettings          PlanBackupSettings          `json:"backup_settings"`
 	BackupPrice             float32                     `json:"backup_price"`
 	IsVisible               bool                        `json:"is_visible"`
 	Limits                  PlanLimits                  `json:"limits"`
@@ -180,6 +186,7 @@ type PlanCreateRequest struct {
 	IsDefault               bool                        `json:"is_default"`
 	IsSnapshotsEnabled      bool                        `json:"is_snapshots_enabled"`
 	IsBackupAvailable       bool                        `json:"is_backup_available"`
+	BackupSettings          PlanBackupSettings          `json:"backup_settings"`
 	BackupPrice             float32                     `json:"backup_price"`
 	ResetLimitPolicy        PlanResetLimitPolicy        `json:"reset_limit_policy"`
 	NetworkTotalTrafficType PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
@@ -195,6 +202,7 @@ type PlanUpdateRequest struct {
 	IsDefault               bool                        `json:"is_default"`
 	IsSnapshotsEnabled      bool                        `json:"is_snapshots_enabled"`
 	IsBackupAvailable       bool                        `json:"is_backup_available"`
+	BackupSettings          PlanBackupSettings          `json:"backup_settings"`
 	BackupPrice             float32                     `json:"backup_price"`
 	ResetLimitPolicy        PlanResetLimitPolicy        `json:"reset_limit_policy"`
 	NetworkTotalTrafficType PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`

@@ -8,6 +8,13 @@ import (
 
 type BackupsService service
 
+type BackupType string
+
+const (
+	BackupTypeFull        BackupType = "full"
+	BackupTypeIncremental BackupType = "incremental"
+)
+
 type BackupCreationMethod string
 
 const (
@@ -26,6 +33,7 @@ const (
 
 type Backup struct {
 	ID                int                  `json:"id"`
+	Type              BackupType           `json:"type"`
 	CreationMethod    BackupCreationMethod `json:"creation_method"`
 	Status            BackupStatus         `json:"status"`
 	Size              float32              `json:"size"`

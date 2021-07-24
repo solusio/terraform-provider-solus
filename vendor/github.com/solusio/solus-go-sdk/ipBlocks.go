@@ -15,22 +15,23 @@ const (
 	IPv6 IPVersion = "IPv6"
 )
 
-type IPBlockCreateRequest struct {
-	ComputeResources []int     `json:"compute_resources,omitempty"`
-	Name             string    `json:"name"`
-	Type             IPVersion `json:"type"`
-	Gateway          string    `json:"gateway"`
-	Ns1              string    `json:"ns_1"`
-	Ns2              string    `json:"ns_2"`
+type IPBlockRequest struct {
+	ComputeResources []int             `json:"compute_resources,omitempty"`
+	Name             string            `json:"name"`
+	Type             IPVersion         `json:"type"`
+	Gateway          string            `json:"gateway"`
+	Ns1              string            `json:"ns_1"`
+	Ns2              string            `json:"ns_2"`
+	ReverseDNS       IPBlockReverseDNS `json:"reverse_dns"`
 
 	// IPv4 related fields
-	Netmask string `json:"netmask"`
-	From    string `json:"from"`
-	To      string `json:"to"`
+	Netmask string `json:"netmask,omitempty"`
+	From    string `json:"from,omitempty"`
+	To      string `json:"to,omitempty"`
 
 	// IPv6 related fields
-	Range  string `json:"range"`
-	Subnet int    `json:"subnet"`
+	Range  string `json:"range,omitempty"`
+	Subnet int    `json:"subnet,omitempty"`
 }
 
 type IPBlock struct {
@@ -44,8 +45,15 @@ type IPBlock struct {
 	From             string             `json:"from"`
 	To               string             `json:"to"`
 	Subnet           int                `json:"subnet"`
+	Range            string             `json:"range"`
 	ComputeResources []ComputeResource  `json:"compute_resources[]"`
 	IPs              []IPBlockIPAddress `json:"ips[]"`
+	ReverseDNS       IPBlockReverseDNS  `json:"reverse_dns"`
+}
+
+type IPBlockReverseDNS struct {
+	Zone    string `json:"zone"`
+	Enabled bool   `json:"enabled"`
 }
 
 type IPBlockIPAddress struct {
@@ -60,20 +68,32 @@ type IPBlocksResponse struct {
 	Data []IPBlock `json:"data"`
 }
 
-func (s *IPBlocksService) List(ctx context.Context) (IPBlocksResponse, error) {
+type ipBlockResponse struct {
+	Data IPBlock `json:"data"`
+}
+
+func (s *IPBlocksService) List(ctx context.Context, filter *FilterIPBlocks) (IPBlocksResponse, error) {
 	resp := IPBlocksResponse{
 		paginatedResponse: paginatedResponse{
 			service: (*service)(s),
 		},
 	}
-	return resp, s.client.list(ctx, "ip_blocks", &resp)
+	return resp, s.client.list(ctx, "ip_blocks", &resp, withFilter(filter.data))
 }
 
-func (s *IPBlocksService) Create(ctx context.Context, data IPBlockCreateRequest) (IPBlock, error) {
-	var resp struct {
-		Data IPBlock `json:"data"`
-	}
+func (s *IPBlocksService) Get(ctx context.Context, id int) (IPBlock, error) {
+	var resp ipBlockResponse
+	return resp.Data, s.client.get(ctx, fmt.Sprintf("ip_blocks/%d", id), &resp)
+}
+
+func (s *IPBlocksService) Create(ctx context.Context, data IPBlockRequest) (IPBlock, error) {
+	var resp ipBlockResponse
 	return resp.Data, s.client.create(ctx, "ip_blocks", data, &resp)
+}
+
+func (s *IPBlocksService) Update(ctx context.Context, id int, data IPBlockRequest) (IPBlock, error) {
+	var resp ipBlockResponse
+	return resp.Data, s.client.update(ctx, fmt.Sprintf("ip_blocks/%d", id), data, &resp)
 }
 
 func (s *IPBlocksService) Delete(ctx context.Context, id int) error {

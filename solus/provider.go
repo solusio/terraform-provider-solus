@@ -36,12 +36,14 @@ func Provider() *schema.Provider {
 
 		DataSourcesMap: map[string]*schema.Resource{
 			"solusio_icon":             dataSourceIcon(),
+			"solusio_ip_block":         dataSourceIPBlock(),
 			"solusio_location":         dataSourceLocation(),
 			"solusio_os_image":         dataSourceOsImage(),
 			"solusio_os_image_version": dataSourceOsImageVersion(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"solusio_ip_block":         resourceIPBlock(),
 			"solusio_location":         resourceLocation(),
 			"solusio_os_image":         resourceOsImage(),
 			"solusio_os_image_version": resourceOsImageVersion(),

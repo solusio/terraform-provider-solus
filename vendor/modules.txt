@@ -23,6 +23,7 @@ github.com/google/go-cmp/cmp/internal/value
 # github.com/hashicorp/errwrap v1.0.0
 github.com/hashicorp/errwrap
 # github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
+## explicit
 github.com/hashicorp/go-cty/cty
 github.com/hashicorp/go-cty/cty/convert
 github.com/hashicorp/go-cty/cty/gocty
@@ -88,12 +89,13 @@ github.com/mitchellh/reflectwalk
 github.com/oklog/run
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/solusio/solus-go-sdk v0.0.0-20210723023722-4cb2b796e9db
+# github.com/solusio/solus-go-sdk v0.0.0-20210724064738-a9d808083825
 ## explicit
 github.com/solusio/solus-go-sdk
 # github.com/stretchr/testify v1.6.1
 ## explicit
 github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
 # github.com/vmihailenco/msgpack v4.0.4+incompatible
 github.com/vmihailenco/msgpack
 github.com/vmihailenco/msgpack/codes
