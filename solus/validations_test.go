@@ -19,6 +19,7 @@ func Test_validationIsDomainName(t *testing.T) {
 	t.Run("negative", func(t *testing.T) {
 		cc := map[string]interface{}{
 			`expected type of "foo" to be string`: 42,
+			`invalid domain name`:                 "192.0.2.1",
 		}
 
 		for expected, val := range cc {

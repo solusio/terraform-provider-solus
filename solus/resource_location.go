@@ -50,10 +50,7 @@ func resourceLocation() *schema.Resource {
 }
 
 func resourceLocationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	name := d.Get("name").(string)
 	description := d.Get("description").(string)
@@ -77,10 +74,7 @@ func resourceLocationCreate(ctx context.Context, d *schema.ResourceData, m inter
 }
 
 func resourceLocationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -108,10 +102,7 @@ func resourceLocationRead(ctx context.Context, d *schema.ResourceData, m interfa
 }
 
 func resourceLocationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	name := d.Get("name").(string)
 	description := d.Get("description").(string)
@@ -140,10 +131,7 @@ func resourceLocationUpdate(ctx context.Context, d *schema.ResourceData, m inter
 }
 
 func resourceLocationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {

@@ -164,10 +164,6 @@ func (c *Client) request(ctx context.Context, method, path string, opts ...reque
 		return nil, 0, err
 	}
 
-	if code >= 404 {
-		return respBody, code, fmt.Errorf("HTTP %d: %s", code, respBody)
-	}
-
 	return respBody, code, nil
 }
 

@@ -96,10 +96,7 @@ func resourceIPBlock() *schema.Resource {
 }
 
 func resourceIPBlockCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	req, err := buildIPBlockRequest(d)
 	if err != nil {
@@ -116,10 +113,7 @@ func resourceIPBlockCreate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceIPBlockRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -162,10 +156,7 @@ func resourceIPBlockRead(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceIPBlockUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -187,10 +178,7 @@ func resourceIPBlockUpdate(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func resourceIPBlockDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {

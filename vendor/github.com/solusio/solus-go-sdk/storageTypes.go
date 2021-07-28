@@ -12,6 +12,7 @@ const (
 	StorageTypeNameFB      StorageTypeName = "fb"
 	StorageTypeNameLVM     StorageTypeName = "lvm"
 	StorageTypeNameThinLVM StorageTypeName = "thinlvm"
+	StorageTypeNameNFS     StorageTypeName = "nfs"
 )
 
 type ImageFormat string

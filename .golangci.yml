@@ -420,6 +420,13 @@ issues:
     - source: 'd\.Get(Ok)?\(".*"\)\.\(\w*\)'
       text: "Error return value is not checked"
 
+    # We can safely ignore possible errors from casting metadata to *solus.Client
+    # 'cause we fully control it and over terraform providers don't check it too.
+    # We have a test for the configuration function and check that it returns proper
+    # metadata though.
+    - source: 'm\.\(\*solus.Client\)'
+      text: "Error return value is not checked"
+
     # All data sources looks similar but it's not true.
     - path: datasource_.*\.go
       linters:

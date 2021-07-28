@@ -2,8 +2,6 @@ package solus
 
 import (
 	"context"
-	"errors"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -43,25 +41,22 @@ func dataSourceOsImageVersion() *schema.Resource {
 }
 
 func dataSourceOsImageVersionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client, ok := m.(*solus.Client)
-	if !ok {
-		return diag.Errorf("invalid Solus client type %T", m)
-	}
+	client := m.(*solus.Client)
 
 	var (
 		res solus.OsImageVersion
 		err error
 	)
 
-	_, hasRawID := d.GetOk("id")
-	_, hasRawVersion := d.GetOk("version")
+	_, hasID := d.GetOk("id")
+	_, hasVersion := d.GetOk("version")
 
 	// These two properties are mutually exclusive.
 	switch {
-	case hasRawID:
+	case hasID:
 		res, err = dataSourceOsImageVersionReadByID(ctx, client, d)
 
-	case hasRawVersion:
+	case hasVersion:
 		res, err = dataSourceOsImageVersionReadByVersion(ctx, client, d)
 	}
 
@@ -73,7 +68,13 @@ func dataSourceOsImageVersionRead(ctx context.Context, d *schema.ResourceData, m
 		return diag.Errorf("os image version not found")
 	}
 
-	d.SetId(strconv.Itoa(res.ID))
+	err = (&schemaChainSetter{d: d}).
+		SetID(res.ID).
+		Set("version", res.Version).
+		Error()
+	if err != nil {
+		return diag.Errorf("failed to map os image version response to data: %s", err)
+	}
 
 	return nil
 }
@@ -83,12 +84,7 @@ func dataSourceOsImageVersionReadByID(
 	c *solus.Client,
 	d *schema.ResourceData,
 ) (solus.OsImageVersion, error) {
-	id, ok := d.Get("id").(int)
-	if !ok {
-		return solus.OsImageVersion{}, errors.New("id isn't an integer")
-	}
-
-	return c.OsImageVersions.Get(ctx, id)
+	return c.OsImageVersions.Get(ctx, d.Get("id").(int))
 }
 
 func dataSourceOsImageVersionReadByVersion(
@@ -97,10 +93,7 @@ func dataSourceOsImageVersionReadByVersion(
 	d *schema.ResourceData,
 ) (solus.OsImageVersion, error) {
 	osImageID := d.Get("os_image_id").(int)
-	version, ok := d.Get("version").(string)
-	if !ok {
-		return solus.OsImageVersion{}, errors.New("version isn't a string")
-	}
+	version := d.Get("version").(string)
 
 	vv, err := c.OsImages.ListVersion(ctx, osImageID)
 	if err != nil {

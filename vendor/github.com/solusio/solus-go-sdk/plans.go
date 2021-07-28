@@ -126,6 +126,16 @@ type PlanLimits struct {
 	BackupsNumber            UnitPlanLimit          `json:"backups_number"`
 }
 
+type PlanUpdateLimits struct {
+	NetworkIncomingBandwidth BandwidthPlanLimit `json:"network_incoming_bandwidth"`
+	NetworkOutgoingBandwidth BandwidthPlanLimit `json:"network_outgoing_bandwidth"`
+	NetworkIncomingTraffic   TrafficPlanLimit   `json:"network_incoming_traffic"`
+	NetworkOutgoingTraffic   TrafficPlanLimit   `json:"network_outgoing_traffic"`
+	NetworkTotalTraffic      TrafficPlanLimit   `json:"network_total_traffic"`
+	NetworkReduceBandwidth   BandwidthPlanLimit `json:"network_reduce_bandwidth"`
+	BackupsNumber            UnitPlanLimit      `json:"backups_number"`
+}
+
 type PlanResetLimitPolicy string
 
 const (
@@ -137,79 +147,85 @@ const (
 type PlanNetworkTotalTrafficType string
 
 const (
-	NetworkTotalTrafficTypeSeparate PlanNetworkTotalTrafficType = "separate"
-	NetworkTotalTrafficTypeTotal    PlanNetworkTotalTrafficType = "total"
+	PlanNetworkTotalTrafficTypeSeparate PlanNetworkTotalTrafficType = "separate"
+	PlanNetworkTotalTrafficTypeTotal    PlanNetworkTotalTrafficType = "total"
 )
 
 type PlanPrice struct {
-	PerHour        string        `json:"per_hour"`
-	PerMonth       string        `json:"per_month"`
-	CurrencyCode   string        `json:"currency_code"`
-	TaxesInclusive bool          `json:"taxes_inclusive"`
-	Taxes          []interface{} `json:"taxes"`
-	TotalPrice     string        `json:"total_price"`
-	BackupPrice    string        `json:"backup_price"`
+	AdditionalIPsPerHour     string        `json:"additional_ips_per_hour"`
+	AdditionalIPsPerMonth    string        `json:"additional_ips_per_month"`
+	PerHour                  string        `json:"per_hour"`
+	PerMonth                 string        `json:"per_month"`
+	CurrencyCode             string        `json:"currency_code"`
+	TaxesInclusive           bool          `json:"taxes_inclusive"`
+	Taxes                    []interface{} `json:"taxes"`
+	TotalPriceWithoutBackups string        `json:"total_price_without_backups"`
+	TotalPrice               string        `json:"total_price"`
+	BackupPrice              string        `json:"backup_price"`
 }
 
 type Plan struct {
-	ID                      int                         `json:"id"`
-	Name                    string                      `json:"name"`
-	Params                  PlanParams                  `json:"params"`
-	StorageType             string                      `json:"storage_type"`
-	ImageFormat             string                      `json:"image_format"`
-	IsDefault               bool                        `json:"is_default"`
-	IsSnapshotAvailable     bool                        `json:"is_snapshot_available"`
-	IsSnapshotsEnabled      bool                        `json:"is_snapshots_enabled"`
-	IsBackupAvailable       bool                        `json:"is_backup_available"`
-	BackupSettings          PlanBackupSettings          `json:"backup_settings"`
-	BackupPrice             float32                     `json:"backup_price"`
-	IsVisible               bool                        `json:"is_visible"`
-	Limits                  PlanLimits                  `json:"limits"`
-	TokensPerHour           float64                     `json:"tokens_per_hour"`
-	TokensPerMonth          float64                     `json:"tokens_per_month"`
-	Position                float64                     `json:"position"`
-	Price                   PlanPrice                   `json:"price"`
-	ResetLimitPolicy        PlanResetLimitPolicy        `json:"reset_limit_policy"`
-	NetworkTotalTrafficType PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
+	ID                       int                         `json:"id"`
+	Name                     string                      `json:"name"`
+	Params                   PlanParams                  `json:"params"`
+	StorageType              string                      `json:"storage_type"`
+	ImageFormat              string                      `json:"image_format"`
+	IsDefault                bool                        `json:"is_default"`
+	IsSnapshotAvailable      bool                        `json:"is_snapshot_available"`
+	IsSnapshotsEnabled       bool                        `json:"is_snapshots_enabled"`
+	IsBackupAvailable        bool                        `json:"is_backup_available"`
+	IsAdditionalIPsAvailable bool                        `json:"is_additional_ips_available"`
+	BackupSettings           PlanBackupSettings          `json:"backup_settings"`
+	BackupPrice              float64                     `json:"backup_price"`
+	IsVisible                bool                        `json:"is_visible"`
+	Limits                   PlanLimits                  `json:"limits"`
+	TokensPerHour            int                         `json:"tokens_per_hour"`
+	TokensPerMonth           int                         `json:"tokens_per_month"`
+	IPTokensPerHour          int                         `json:"ip_tokens_per_hour"`
+	IPTokensPerMonth         int                         `json:"ip_tokens_per_month"`
+	Position                 float64                     `json:"position"`
+	Price                    PlanPrice                   `json:"price"`
+	ResetLimitPolicy         PlanResetLimitPolicy        `json:"reset_limit_policy"`
+	NetworkTotalTrafficType  PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
 }
 
 type PlanCreateRequest struct {
-	Name                    string                      `json:"name"`
-	Params                  PlanParams                  `json:"params"`
-	StorageType             StorageTypeName             `json:"storage_type"`
-	ImageFormat             ImageFormat                 `json:"image_format"`
-	Limits                  PlanLimits                  `json:"limits"`
-	TokensPerHour           float64                     `json:"tokens_per_hour"`
-	TokensPerMonth          float64                     `json:"tokens_per_month"`
-	Position                float64                     `json:"position"`
-	IsVisible               bool                        `json:"is_visible"`
-	IsDefault               bool                        `json:"is_default"`
-	IsSnapshotsEnabled      bool                        `json:"is_snapshots_enabled"`
-	IsBackupAvailable       bool                        `json:"is_backup_available"`
-	BackupSettings          PlanBackupSettings          `json:"backup_settings"`
-	BackupPrice             float32                     `json:"backup_price"`
-	ResetLimitPolicy        PlanResetLimitPolicy        `json:"reset_limit_policy"`
-	NetworkTotalTrafficType PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
+	Name                     string                      `json:"name"`
+	Params                   PlanParams                  `json:"params"`
+	StorageType              StorageTypeName             `json:"storage_type"`
+	ImageFormat              ImageFormat                 `json:"image_format"`
+	Limits                   PlanLimits                  `json:"limits"`
+	TokensPerHour            int                         `json:"tokens_per_hour"`
+	TokensPerMonth           int                         `json:"tokens_per_month"`
+	IPTokensPerHour          int                         `json:"ip_tokens_per_hour"`
+	IPTokensPerMonth         int                         `json:"ip_tokens_per_month"`
+	IsVisible                bool                        `json:"is_visible"`
+	IsDefault                bool                        `json:"is_default"`
+	IsSnapshotsEnabled       bool                        `json:"is_snapshots_enabled"`
+	IsBackupAvailable        bool                        `json:"is_backup_available"`
+	IsAdditionalIPsAvailable bool                        `json:"is_additional_ips_available"`
+	BackupSettings           PlanBackupSettings          `json:"backup_settings"`
+	BackupPrice              float64                     `json:"backup_price"`
+	ResetLimitPolicy         PlanResetLimitPolicy        `json:"reset_limit_policy"`
+	NetworkTotalTrafficType  PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
 }
 
 type PlanUpdateRequest struct {
-	Name                    string                      `json:"name"`
-	Limits                  PlanLimits                  `json:"limits"`
-	TokensPerHour           float64                     `json:"tokens_per_hour"`
-	TokensPerMonth          float64                     `json:"tokens_per_month"`
-	Position                float64                     `json:"position"`
-	IsVisible               bool                        `json:"is_visible"`
-	IsDefault               bool                        `json:"is_default"`
-	IsSnapshotsEnabled      bool                        `json:"is_snapshots_enabled"`
-	IsBackupAvailable       bool                        `json:"is_backup_available"`
-	BackupSettings          PlanBackupSettings          `json:"backup_settings"`
-	BackupPrice             float32                     `json:"backup_price"`
-	ResetLimitPolicy        PlanResetLimitPolicy        `json:"reset_limit_policy"`
-	NetworkTotalTrafficType PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
-}
-
-type planResponse struct {
-	Data Plan `json:"data"`
+	Name                     string                      `json:"name"`
+	Limits                   PlanUpdateLimits            `json:"limits"`
+	TokensPerHour            int                         `json:"tokens_per_hour"`
+	TokensPerMonth           int                         `json:"tokens_per_month"`
+	IPTokensPerHour          int                         `json:"ip_tokens_per_hour"`
+	IPTokensPerMonth         int                         `json:"ip_tokens_per_month"`
+	IsVisible                bool                        `json:"is_visible"`
+	IsDefault                bool                        `json:"is_default"`
+	IsSnapshotsEnabled       bool                        `json:"is_snapshots_enabled"`
+	IsBackupAvailable        bool                        `json:"is_backup_available"`
+	IsAdditionalIPsAvailable bool                        `json:"is_additional_ips_available"`
+	BackupSettings           PlanBackupSettings          `json:"backup_settings"`
+	BackupPrice              float64                     `json:"backup_price"`
+	ResetLimitPolicy         PlanResetLimitPolicy        `json:"reset_limit_policy"`
+	NetworkTotalTrafficType  PlanNetworkTotalTrafficType `json:"network_traffic_limit_type"`
 }
 
 type PlansResponse struct {
@@ -218,49 +234,66 @@ type PlansResponse struct {
 	Data []Plan `json:"data"`
 }
 
-func (s *PlansService) List(ctx context.Context) (PlansResponse, error) {
+type planResponse struct {
+	Data Plan `json:"data"`
+}
+
+func (s *PlansService) List(ctx context.Context, filter *FilterPlans) (PlansResponse, error) {
 	resp := PlansResponse{
 		paginatedResponse: paginatedResponse{
 			service: (*service)(s),
 		},
 	}
-	return resp, s.client.list(ctx, "plans", &resp)
+	return resp, s.client.list(ctx, "plans", &resp, withFilter(filter.data))
+}
+
+func (s *PlansService) Get(ctx context.Context, id int) (Plan, error) {
+	var resp planResponse
+	return resp.Data, s.client.get(ctx, fmt.Sprintf("plans/%d", id), &resp)
 }
 
 func (s *PlansService) Create(ctx context.Context, data PlanCreateRequest) (Plan, error) {
-	s.setDefaultsForPlanLimits(&data.Limits)
-	if data.ResetLimitPolicy == "" {
-		data.ResetLimitPolicy = PlanResetLimitPolicyNever
-	}
+	s.setCreateRequestDefaults(&data)
 	var resp planResponse
 	return resp.Data, s.client.create(ctx, "plans", data, &resp)
 }
 
-func (s *PlansService) Update(ctx context.Context, id int, data PlanUpdateRequest) (Plan, error) {
-	s.setDefaultsForPlanLimits(&data.Limits)
+func (*PlansService) setCreateRequestDefaults(data *PlanCreateRequest) {
 	if data.ResetLimitPolicy == "" {
 		data.ResetLimitPolicy = PlanResetLimitPolicyNever
 	}
+
+	data.Limits.DiskBandwidth.setDefault()
+	data.Limits.DiskIOPS.setDefault()
+	data.Limits.NetworkIncomingBandwidth.setDefault()
+	data.Limits.NetworkOutgoingBandwidth.setDefault()
+	data.Limits.NetworkReduceBandwidth.setDefault()
+	data.Limits.NetworkIncomingTraffic.setDefault()
+	data.Limits.NetworkOutgoingTraffic.setDefault()
+	data.Limits.NetworkTotalTraffic.setDefault()
+	data.Limits.BackupsNumber.setDefault()
+}
+
+func (s *PlansService) Update(ctx context.Context, id int, data PlanUpdateRequest) (Plan, error) {
+	s.setUpdateRequestDefaults(&data)
 	var resp planResponse
 	return resp.Data, s.client.update(ctx, fmt.Sprintf("plans/%d", id), data, &resp)
 }
 
-func (s *PlansService) Delete(ctx context.Context, id int) error {
-	return s.client.delete(ctx, fmt.Sprintf("plans/%d", id))
-}
-
-func (*PlansService) setDefaultsForPlanLimits(p *PlanLimits) {
-	if p == nil {
-		return
+func (*PlansService) setUpdateRequestDefaults(data *PlanUpdateRequest) {
+	if data.ResetLimitPolicy == "" {
+		data.ResetLimitPolicy = PlanResetLimitPolicyNever
 	}
 
-	p.DiskBandwidth.setDefault()
-	p.DiskIOPS.setDefault()
-	p.NetworkIncomingBandwidth.setDefault()
-	p.NetworkOutgoingBandwidth.setDefault()
-	p.NetworkReduceBandwidth.setDefault()
-	p.NetworkIncomingTraffic.setDefault()
-	p.NetworkOutgoingTraffic.setDefault()
-	p.NetworkTotalTraffic.setDefault()
-	p.BackupsNumber.setDefault()
+	data.Limits.NetworkIncomingBandwidth.setDefault()
+	data.Limits.NetworkOutgoingBandwidth.setDefault()
+	data.Limits.NetworkReduceBandwidth.setDefault()
+	data.Limits.NetworkIncomingTraffic.setDefault()
+	data.Limits.NetworkOutgoingTraffic.setDefault()
+	data.Limits.NetworkTotalTraffic.setDefault()
+	data.Limits.BackupsNumber.setDefault()
+}
+
+func (s *PlansService) Delete(ctx context.Context, id int) error {
+	return s.client.delete(ctx, fmt.Sprintf("plans/%d", id))
 }
