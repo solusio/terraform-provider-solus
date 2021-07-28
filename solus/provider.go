@@ -52,6 +52,7 @@ func Provider() *schema.Provider {
 			"solusio_location":         dataSourceLocation(),
 			"solusio_os_image":         dataSourceOsImage(),
 			"solusio_os_image_version": dataSourceOsImageVersion(),
+			"solusio_plan":             dataSourcePlan(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -59,6 +60,7 @@ func Provider() *schema.Provider {
 			"solusio_location":         resourceLocation(),
 			"solusio_os_image":         resourceOsImage(),
 			"solusio_os_image_version": resourceOsImageVersion(),
+			"solusio_plan":             resourcePlan(),
 		},
 
 		ConfigureContextFunc: configureProvider,
