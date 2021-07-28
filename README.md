@@ -16,3 +16,19 @@ Development
 ```shell script
 make init
 ```
+
+Run unit tests:
+
+```shell script
+make test
+```
+
+Run acceptance tests:
+
+```shell script
+export SOLUSIO_BASE_URL="https://localhost/api/v1/"
+export SOLUSIO_TOKEN="..."
+export SOLUSIO_INSECURE=1
+
+make testacc
+```

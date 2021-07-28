@@ -3,11 +3,19 @@ package solus
 import (
 	"context"
 	"net/url"
+	"os"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/solusio/solus-go-sdk"
+)
+
+const (
+	baseURLEnv  = "SOLUSIO_BASE_URL"
+	tokenEnv    = "SOLUSIO_TOKEN" //nolint:gosec // False positive.
+	insecureEnv = "SOLUSIO_INSECURE"
 )
 
 func Provider() *schema.Provider {
@@ -18,6 +26,7 @@ func Provider() *schema.Provider {
 				Required:     true,
 				Description:  "SOLUS IO API base url like 'https://solus.io:4444'",
 				ValidateFunc: validation.NoZeroValues,
+				DefaultFunc:  schema.EnvDefaultFunc(baseURLEnv, nil),
 			},
 			"token": {
 				Type:         schema.TypeString,
@@ -25,12 +34,15 @@ func Provider() *schema.Provider {
 				Sensitive:    true,
 				Description:  "SOLUS IO auth token",
 				ValidateFunc: validation.NoZeroValues,
+				DefaultFunc:  schema.EnvDefaultFunc(tokenEnv, nil),
 			},
 			"insecure": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 				Description: "Skip certificate validation",
+				DefaultFunc: func() (interface{}, error) {
+					return strings.TrimSpace(os.Getenv(insecureEnv)) == "1", nil
+				},
 			},
 		},
 
@@ -54,13 +66,13 @@ func Provider() *schema.Provider {
 }
 
 func configureProvider(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	rawURL := d.Get("base_url").(string)
+	rawBaseURL := d.Get("base_url").(string)
 	token := d.Get("token").(string)
 	insecure := d.Get("insecure").(bool)
 
-	baseURL, err := url.Parse(rawURL)
+	baseURL, err := url.Parse(rawBaseURL)
 	if err != nil {
-		return nil, diag.Errorf("failed to parse base URL %q: %s", rawURL, err)
+		return nil, diag.Errorf("failed to parse base URL %q: %s", rawBaseURL, err)
 	}
 
 	opts := make([]solus.ClientOption, 0)

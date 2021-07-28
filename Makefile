@@ -1,6 +1,7 @@
 NAME=solusio
 BINARY=terraform-provider-${NAME}
 HOOK=hooks/pre-commit/main.go
+LIST=`go list ./... | grep -v /hooks/pre-commit`
 
 .PHONY: all
 all: fmt lint test build
@@ -15,7 +16,11 @@ lint:
 
 .PHONY: test
 test:
-	go test -mod=vendor -race -cover $$(go list ./...)
+	go test $(TESTARGS) -mod=vendor -race -cover $(LIST)
+
+.PHONY: testacc
+testacc:
+	TF_ACC=1 go test $(TESTARGS) -mod=vendor -race -cover $(LIST)
 
 .PHONY: build
 build:
