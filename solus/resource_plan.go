@@ -314,9 +314,8 @@ func resourceToPlanLimits(i interface{}) solus.PlanLimits {
 			}
 		}
 
-		iv := v.([]interface{})
-
-		if len(iv) == 0 {
+		iv, ok := v.([]interface{})
+		if !ok || len(iv) == 0 {
 			return map[string]interface{}{
 				"is_enabled": false,
 				"limit":      0,
