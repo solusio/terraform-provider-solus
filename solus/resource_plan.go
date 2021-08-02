@@ -303,7 +303,7 @@ func resourceToPlanLimits(i interface{}) solus.PlanLimits {
 		panic(fmt.Sprintf("unknown key %q", k))
 	}
 
-	getKeyVakue := func(m map[string]interface{}, k string) map[string]interface{} {
+	getKeyValue := func(m map[string]interface{}, k string) map[string]interface{} {
 		defaultUnit := getDefaultUnit(k)
 		v, ok := m[k]
 		if !ok {
@@ -313,7 +313,18 @@ func resourceToPlanLimits(i interface{}) solus.PlanLimits {
 				"unit":       defaultUnit,
 			}
 		}
-		return (v.([]interface{}))[0].(map[string]interface{})
+
+		iv := v.([]interface{})
+
+		if len(iv) == 0 {
+			return map[string]interface{}{
+				"is_enabled": false,
+				"limit":      0,
+				"unit":       defaultUnit,
+			}
+		}
+
+		return iv[0].(map[string]interface{})
 	}
 
 	mm := i.([]interface{}) //nolint:errcheck // Not necessary.
@@ -325,15 +336,15 @@ func resourceToPlanLimits(i interface{}) solus.PlanLimits {
 
 	m := mm[0].(map[string]interface{}) //nolint:errcheck // Not necessary.
 
-	dband := getKeyVakue(m, "disk_bandwidth")
-	diops := getKeyVakue(m, "disk_iops")
-	niband := getKeyVakue(m, "network_incoming_bandwidth")
-	noband := getKeyVakue(m, "network_outgoing_bandwidth")
-	nitraff := getKeyVakue(m, "network_incoming_traffic")
-	notraff := getKeyVakue(m, "network_outgoing_traffic")
-	nttraff := getKeyVakue(m, "network_total_traffic")
-	nrband := getKeyVakue(m, "network_reduce_bandwidth")
-	bnumb := getKeyVakue(m, "backups_number")
+	dband := getKeyValue(m, "disk_bandwidth")
+	diops := getKeyValue(m, "disk_iops")
+	niband := getKeyValue(m, "network_incoming_bandwidth")
+	noband := getKeyValue(m, "network_outgoing_bandwidth")
+	nitraff := getKeyValue(m, "network_incoming_traffic")
+	notraff := getKeyValue(m, "network_outgoing_traffic")
+	nttraff := getKeyValue(m, "network_total_traffic")
+	nrband := getKeyValue(m, "network_reduce_bandwidth")
+	bnumb := getKeyValue(m, "backups_number")
 
 	return solus.PlanLimits{
 		DiskBandwidth: solus.DiskBandwidthPlanLimit{

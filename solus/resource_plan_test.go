@@ -238,6 +238,95 @@ resource "solusio_plan" "%[1]s_default" {
 				),
 			},
 
+			// Create resource with some properties.
+			{
+				Config: fmt.Sprintf(
+					`
+resource "solusio_plan" "%[1]s_some" {
+	name = "%[1]s_some"
+	storage_type = "fb"
+	image_format = "raw"
+	params {
+		disk = 1
+		ram = 2
+		vcpu = 3
+	}
+	tokens_per_hour = 4
+	tokens_per_month = 5
+	ip_tokens_per_hour = 6
+	ip_tokens_per_month = 7
+
+	limits {
+		network_outgoing_bandwidth {
+			is_enabled = true
+			limit = 50
+			unit = "Mbps"
+		}
+		backups_number {
+			is_enabled = true
+			limit = 100
+		}
+	}
+
+	backup_price = 3.14
+	reset_limit_policy = "vm_created_day"
+	network_traffic_limit_type = "total"
+}
+`,
+					name,
+				),
+				Check: resource.ComposeTestCheckFunc(
+					checker(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						name+"_some",
+						solus.StorageTypeNameFB,
+						solus.ImageFormatRaw,
+						solus.PlanParams{
+							Disk: 1,
+							RAM:  2,
+							VCPU: 3,
+						},
+						4,
+						5,
+						6,
+						7,
+						3.14,
+						solus.PlanResetLimitPolicyVMCreatedDay,
+						solus.PlanNetworkTotalTrafficTypeTotal,
+					),
+					resource.TestCheckResourceAttr(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						"limits.0.network_outgoing_bandwidth.0.is_enabled",
+						"true",
+					),
+					resource.TestCheckResourceAttr(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						"limits.0.network_outgoing_bandwidth.0.limit",
+						"50",
+					),
+					resource.TestCheckResourceAttr(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						"limits.0.network_outgoing_bandwidth.0.unit",
+						"Mbps",
+					),
+					resource.TestCheckResourceAttr(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						"limits.0.backups_number.0.is_enabled",
+						"true",
+					),
+					resource.TestCheckResourceAttr(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						"limits.0.backups_number.0.limit",
+						"100",
+					),
+					resource.TestCheckResourceAttr(
+						fmt.Sprintf("solusio_plan.%s_some", name),
+						"limits.0.backups_number.0.unit",
+						"units",
+					),
+				),
+			},
+
 			// Create resource with all properties.
 			{
 				Config: fmt.Sprintf(
