@@ -1,5 +1,6 @@
 package solus
 
+// FilterUsers represent available filters for fetching list of users.
 type FilterUsers struct {
 	filter
 }

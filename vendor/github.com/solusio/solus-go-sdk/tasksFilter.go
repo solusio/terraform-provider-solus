@@ -1,5 +1,6 @@
 package solus
 
+// FilterTasks represent available filters for fetching list of tasks.
 type FilterTasks struct {
 	filter
 }

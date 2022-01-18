@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+// ComputeResourceServerCreateRequest represents available properties for creating
+// a new servers on a compute resource.
 type ComputeResourceServerCreateRequest struct {
 	Name             string                `json:"name"`
 	Description      string                `json:"description"`
@@ -21,6 +23,7 @@ type ComputeResourceServerCreateRequest struct {
 	BackupSettings   *ServerBackupSettings `json:"backup_settings,omitempty"`
 }
 
+// ServersCreate creates a new server on the specified compute resource.
 func (s *ComputeResourcesService) ServersCreate(
 	ctx context.Context,
 	id int,

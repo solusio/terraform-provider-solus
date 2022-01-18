@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
+// SnapshotsService handles all available methods with snapshots.
 type StorageService service
 
+// Storage represents a storage.
 type Storage struct {
 	ID                      int                    `json:"id"`
 	Name                    string                 `json:"name"`
@@ -25,11 +27,13 @@ type storageResponse struct {
 	Data Storage `json:"data"`
 }
 
+// Get gets specified storage.
 func (s *StorageService) Get(ctx context.Context, id int) (Storage, error) {
 	var resp storageResponse
 	return resp.Data, s.client.get(ctx, fmt.Sprintf("storages/%d", id), &resp)
 }
 
+// Delete deletes specified storage.
 func (s *StorageService) Delete(ctx context.Context, id int) error {
-	return s.client.delete(ctx, fmt.Sprintf("storages/%d", id))
+	return s.client.syncDelete(ctx, fmt.Sprintf("storages/%d", id))
 }

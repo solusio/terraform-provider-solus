@@ -112,7 +112,29 @@ func (c *Client) patch(ctx context.Context, path string, data, resp interface{})
 	return unmarshal(body, resp)
 }
 
-func (c *Client) delete(ctx context.Context, path string) error {
+func (c *Client) asyncDelete(ctx context.Context, path string) (Task, error) {
+	body, code, err := c.request(ctx, http.MethodDelete, path)
+	if err != nil {
+		return Task{}, err
+	}
+
+	if code != http.StatusOK {
+		return Task{}, newHTTPError(http.MethodDelete, path, code, body)
+	}
+
+	var resp taskResponse
+	if err := unmarshal(body, &resp); err != nil {
+		return Task{}, err
+	}
+
+	if resp.Data.ID == 0 {
+		return Task{}, errors.New("task doesn't have an id")
+	}
+
+	return resp.Data, nil
+}
+
+func (c *Client) syncDelete(ctx context.Context, path string) error {
 	body, code, err := c.request(ctx, http.MethodDelete, path)
 	if err != nil {
 		return err
@@ -124,10 +146,32 @@ func (c *Client) delete(ctx context.Context, path string) error {
 	return nil
 }
 
+func (c *Client) asyncPost(ctx context.Context, path string, opts ...requestOption) (Task, error) {
+	body, code, err := c.request(ctx, http.MethodPost, path, opts...)
+	if err != nil {
+		return Task{}, err
+	}
+
+	if code != http.StatusOK {
+		return Task{}, newHTTPError(http.MethodPost, path, code, body)
+	}
+
+	var resp taskResponse
+	if err := unmarshal(body, &resp); err != nil {
+		return Task{}, err
+	}
+
+	if resp.Data.ID == 0 {
+		return Task{}, errors.New("task doesn't have an id")
+	}
+
+	return resp.Data, nil
+}
+
 func (c *Client) request(ctx context.Context, method, path string, opts ...requestOption) ([]byte, int, error) {
 	req, err := c.buildRequest(ctx, method, path, opts...)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("failed to build HTTP request: %w", err)
 	}
 
 	var resp *http.Response
@@ -161,7 +205,7 @@ func (c *Client) request(ctx context.Context, method, path string, opts ...reque
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("failed to read response body: %w", err)
 	}
 
 	return respBody, code, nil
