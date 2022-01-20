@@ -428,7 +428,7 @@ issues:
       text: "Error return value is not checked"
 
     # All data sources looks similar but it's not true.
-    - path: datasource_.*\.go
+    - path: data_source_.*\.go
       linters:
         - dupl
 

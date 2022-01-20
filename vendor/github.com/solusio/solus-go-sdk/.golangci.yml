@@ -5,6 +5,8 @@ run:
   skip-dirs-use-default: true
   modules-download-mode: readonly
   allow-parallel-runners: true
+  build-tags:
+    - generator
 
 output:
   format: tab
@@ -161,6 +163,11 @@ linters-settings:
 
   staticcheck:
     enable: true
+
+  stylecheck:
+    go: "1.17"
+    checks:
+      - "all"
 
   nolintlint:
     # Require machine-readable nolint directives (i.e. with no leading space)
@@ -358,7 +365,7 @@ issues:
     - "ineffective break statement. Did you mean to break out of the outer loop"
 
   exclude-rules:
-    - path: (_test\.go|internal/apiTests)
+    - path: _test\.go
       linters:
         - dupl
         - errcheck
@@ -375,6 +382,9 @@ issues:
     - source: "//nolint:[[:graph:]]*[^l]{3}[[:graph:]]*"
       linters:
         - lll
+
+    - path: generators/
+      text: "use of `fmt.Printf`"
 
 severity:
   default-severity: error

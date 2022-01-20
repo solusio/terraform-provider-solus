@@ -1,13 +1,15 @@
 package main
 
+//go:generate terraform fmt  -recursive ./examples/
+
 import (
 	"context"
 	"flag"
 	"log"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/solusio/terraform-provider-solus/internal/provider"
 
-	"github.com/solusio/terraform-provider-solus/solus"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
 func main() {
@@ -22,7 +24,7 @@ func main() {
 	flag.Parse()
 
 	opts := &plugin.ServeOpts{
-		ProviderFunc: solus.Provider,
+		ProviderFunc: provider.New,
 	}
 
 	if !debugMode {

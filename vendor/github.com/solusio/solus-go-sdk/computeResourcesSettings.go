@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// SettingsUpdate updates compute resource's settings.
 func (s *ComputeResourcesService) SettingsUpdate(
 	ctx context.Context,
 	id int,
