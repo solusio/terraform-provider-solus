@@ -5,11 +5,15 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAccDatasourceSSHKey(t *testing.T) {
 	name := generateResourceName()
 	resName := "solus_ssh_key." + name
+
+	pubKey, err := generateSSHPublicKey()
+	require.NoError(t, err)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          testAccPreCheck(t),
@@ -21,7 +25,7 @@ func TestAccDatasourceSSHKey(t *testing.T) {
 					`
 resource "solus_ssh_key" "%[1]s" {
 	name = "%[1]s"
-	body = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFbNUAbScm4GGCTjKwgC4T/zitU9kdHFKvOp3U//bVFQ"
+	body = "%[2]s"
 }
 
 data "solus_ssh_key" "%[1]s_by_id" {
@@ -33,6 +37,7 @@ data "solus_ssh_key" "%[1]s_by_name" {
 }
 `,
 					name,
+					pubKey,
 				),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data."+resName+"_by_id", "id"),

@@ -2,9 +2,14 @@ package provider
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -12,6 +17,7 @@ import (
 	"github.com/solusio/solus-go-sdk"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/ssh"
 )
 
 func TestAccResourceVirtualServer(t *testing.T) {
@@ -21,6 +27,9 @@ func TestAccResourceVirtualServer(t *testing.T) {
 	)
 	name := generateResourceName()
 	resName := "solus_virtual_server." + name
+
+	pubKey, err := generateSSHPublicKey()
+	require.NoError(t, err)
 
 	var locationID int
 	if raw := os.Getenv("SOLUS_TEST_LOCATION_ID"); raw != "" {
@@ -93,7 +102,7 @@ resource "solus_plan" "%[1]s" {
 
 resource "solus_ssh_key" "%[1]s" {
 	name = "%[1]s"
-	body = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFbNUAbScm4GGCTjKwgC4T/zitU9kdHFKvOp3U//bVFQ"
+	body = "%[5]s"
 }
 
 resource "solus_virtual_server" "%[1]s" {
@@ -121,6 +130,7 @@ EOT
 					hostname,
 					description,
 					locationID,
+					pubKey,
 				),
 				Check: checker(hostname, description),
 			},
@@ -152,4 +162,29 @@ func testAccCheckVirtualServerDestroy(s *terraform.State) error {
 	}
 
 	return nil
+}
+
+func generateSSHPublicKey() (string, error) {
+	privateKey, err := rsa.GenerateKey(rand.Reader, 1024)
+	if err != nil {
+		return "", err
+	}
+
+	var privKeyBuf strings.Builder
+
+	privateKeyPEM := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}
+	if err := pem.Encode(&privKeyBuf, privateKeyPEM); err != nil {
+		return "", err
+	}
+
+	// generate and write public key
+	pub, err := ssh.NewPublicKey(&privateKey.PublicKey)
+	if err != nil {
+		return "", err
+	}
+
+	var pubKeyBuf strings.Builder
+	pubKeyBuf.Write(ssh.MarshalAuthorizedKey(pub))
+
+	return strings.TrimSpace(pubKeyBuf.String()), nil
 }

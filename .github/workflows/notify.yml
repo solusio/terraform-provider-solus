@@ -1,0 +1,64 @@
+name: notify
+
+on:
+  pull_request:
+    branches: [ master ]
+    types: [ opened, synchronize, closed ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 8398a7/action-slack@v3
+        if: github.event.action == 'opened'
+        with:
+          status: custom
+          fields: author
+          custom_payload: |
+            {
+              username: 'github-bot',
+              icon_emoji: ':octocat:',
+              attachments: [{
+                color: 'good',
+                title: 'New pull request at ${{ github.repository }}',
+                text: `Title: ${{ github.event.pull_request.title }}\nAuthor: ${process.env.AS_AUTHOR}\nPlease <${{ github.event.pull_request.html_url }}|review this PR>`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - uses: 8398a7/action-slack@v3
+        if: github.event.action == 'synchronize'
+        with:
+          status: custom
+          fields: author
+          custom_payload: |
+            {
+              username: 'solus-github-bot',
+              icon_emoji: ':octocat:',
+              attachments: [{
+                color: 'good',
+                title: 'Pull request was updated at ${{ github.repository }}',
+                text: `Title: ${{ github.event.pull_request.title }}\nAuthor: ${process.env.AS_AUTHOR}\nPlease <${{ github.event.pull_request.html_url }}|review this PR>`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - uses: 8398a7/action-slack@v3
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
+        with:
+          status: custom
+          fields: author
+          custom_payload: |
+            {
+              username: 'solus-github-bot',
+              icon_emoji: ':octocat:',
+              attachments: [{
+                color: 'good',
+                title: 'Pull request was merged at ${{ github.repository }}',
+                text: `Title: ${{ github.event.pull_request.title }}\nAuthor: ${process.env.AS_AUTHOR}`,
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
