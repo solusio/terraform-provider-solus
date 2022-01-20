@@ -7,6 +7,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
 	github.com/solusio/solus-go-sdk v0.0.0-20220120092628-f9508942461d
 	github.com/stretchr/testify v1.7.0
+	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 	gopkg.in/guregu/null.v4 v4.0.0
 )
 
@@ -47,7 +48,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/zclconf/go-cty v1.10.0 // indirect
-	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
 	golang.org/x/net v0.0.0-20210326060303-6b1517762897 // indirect
 	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 // indirect
 	golang.org/x/text v0.3.5 // indirect
