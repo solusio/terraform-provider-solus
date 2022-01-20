@@ -53,6 +53,8 @@ func New() *schema.Provider {
 			"solus_os_image":         dataSourceOsImage(),
 			"solus_os_image_version": dataSourceOsImageVersion(),
 			"solus_plan":             dataSourcePlan(),
+			"solus_project":          dataSourceProject(),
+			"solus_ssh_key":          dataSourceSSHKey(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -61,6 +63,9 @@ func New() *schema.Provider {
 			"solus_os_image":         resourceOSImage(),
 			"solus_os_image_version": resourceOSImageVersion(),
 			"solus_plan":             resourcePlan(),
+			"solus_project":          resourceProject(),
+			"solus_ssh_key":          resourceSSHKey(),
+			"solus_virtual_server":   resourceVirtualServer(),
 		},
 
 		ConfigureContextFunc: configureProvider,
@@ -83,7 +88,7 @@ func configureProvider(_ context.Context, d *schema.ResourceData) (interface{}, 
 		opts = append(opts, solus.AllowInsecure())
 	}
 
-	client, err := solus.NewClient(baseURL, solus.APITokenAuthenticator{Token: token}, opts...)
+	client, err := newClient(baseURL, solus.APITokenAuthenticator{Token: token}, opts...)
 	if err != nil {
 		return nil, diag.Errorf("failed to initialize API client: %s", err)
 	}

@@ -276,11 +276,29 @@ func resourcePlan() *schema.Resource {
 					string(solus.PlanNetworkTotalTrafficTypeTotal),
 				}, false),
 			},
+
+			"available_locations": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type:         schema.TypeInt,
+					ValidateFunc: validation.IntAtLeast(1),
+				},
+			},
+
+			"available_os_image_versions": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type:         schema.TypeInt,
+					ValidateFunc: validation.IntAtLeast(1),
+				},
+			},
 		},
 	}
 }
 
-func resourcePlanCreate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourcePlanCreate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	res, err := client.Plans.Create(ctx, solus.PlanCreateRequest{
 		Name:                     d.Get("name").(string),
 		VirtualizationType:       solus.VirtualizationType(d.Get("virtualization_type").(string)),
@@ -304,6 +322,8 @@ func resourcePlanCreate(ctx context.Context, client *solus.Client, d *schema.Res
 			IsIncrementalBackupEnabled: false,
 			IncrementalBackupsLimit:    1,
 		},
+		AvailableLocations:       listOfIDs(d.Get("available_locations")),
+		AvailableOsImageVersions: listOfIDs(d.Get("available_os_image_versions")),
 	})
 	if err != nil {
 		return normalizeAPIError(err)
@@ -425,7 +445,7 @@ func resourceToPlanLimits(i interface{}) solus.PlanLimits {
 	}
 }
 
-func resourcePlanRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourcePlanRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -458,7 +478,7 @@ func resourcePlanRead(ctx context.Context, client *solus.Client, d *schema.Resou
 		Error()
 }
 
-func resourcePlanUpdate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourcePlanUpdate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -483,6 +503,8 @@ func resourcePlanUpdate(ctx context.Context, client *solus.Client, d *schema.Res
 			IsIncrementalBackupEnabled: false,
 			IncrementalBackupsLimit:    1,
 		},
+		AvailableLocations:       listOfIDs(d.Get("available_locations")),
+		AvailableOsImageVersions: listOfIDs(d.Get("available_os_image_versions")),
 	})
 	if err != nil {
 		return normalizeAPIError(err)
@@ -547,7 +569,7 @@ func resourceToPlanUpdateLimits(i interface{}) solus.PlanUpdateLimits {
 	}
 }
 
-func resourcePlanDelete(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourcePlanDelete(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err

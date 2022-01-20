@@ -36,6 +36,9 @@ type Plan struct {
 	AvailableLocations       []ShortLocation             `json:"available_locations"`
 	AvailableOsImageVersions []ShortOsImageVersion       `json:"available_os_image_versions"`
 	AvailableApplications    []ShortOsImageVersion       `json:"available_applications"`
+	Netfilter                Netfilter                   `json:"netfilter"`
+	PPP                      PPP                         `json:"ppp"`
+	TUNTAP                   TUNTAP                      `json:"tun_tap"`
 }
 
 // ShortPlan represents only ID and name of plan.
@@ -52,6 +55,7 @@ type PlanParams struct {
 	VCPUUnits  int `json:"vcpu_units"`
 	VCPULimit  int `json:"vcpu_limit"`
 	IOPriority int `json:"io_priority"`
+	Swap       int `json:"swap"`
 }
 
 // PlanBackupSettings represents a plan's backup settings.
@@ -253,6 +257,31 @@ type PlanPrice struct {
 	BackupPrice              string        `json:"backup_price"`
 }
 
+// NetfilterStatus represents available netfilter statuses.
+type NetfilterStatus string
+
+const (
+	NetfilterStatusDisabled  NetfilterStatus = "disabled"
+	NetfilterStatusStateless NetfilterStatus = "stateless"
+	NetfilterStatusStateful  NetfilterStatus = "stateful"
+	NetfilterStatusFull      NetfilterStatus = "full"
+)
+
+type Netfilter struct {
+	Value      NetfilterStatus `json:"value"`
+	IsEditable bool            `json:"is_editable"`
+}
+
+type TUNTAP struct {
+	Value      bool `json:"value"`
+	IsEditable bool `json:"is_editable"`
+}
+
+type PPP struct {
+	Value      bool `json:"value"`
+	IsEditable bool `json:"is_editable"`
+}
+
 // PlanCreateRequest represents available properties for creating a new plan.
 type PlanCreateRequest struct {
 	Name                     string                      `json:"name"`
@@ -277,6 +306,9 @@ type PlanCreateRequest struct {
 	AvailableLocations       []int                       `json:"available_locations,omitempty"`
 	AvailableOsImageVersions []int                       `json:"available_os_image_versions,omitempty"`
 	AvailableApplications    []int                       `json:"available_applications,omitempty"`
+	Netfilter                Netfilter                   `json:"netfilter,omitempty"`
+	PPP                      PPP                         `json:"ppp,omitempty"`
+	TUNTAP                   TUNTAP                      `json:"tun_tap,omitempty"`
 }
 
 // PlanUpdateRequest represents available properties for updating an existing plan.
@@ -299,6 +331,9 @@ type PlanUpdateRequest struct {
 	AvailableLocations       []int                       `json:"available_locations,omitempty"`
 	AvailableOsImageVersions []int                       `json:"available_os_image_versions,omitempty"`
 	AvailableApplications    []int                       `json:"available_applications,omitempty"`
+	Netfilter                Netfilter                   `json:"netfilter,omitempty"`
+	PPP                      PPP                         `json:"ppp,omitempty"`
+	TUNTAP                   TUNTAP                      `json:"tun_tap,omitempty"`
 }
 
 // PlansResponse represents paginated list of plans.

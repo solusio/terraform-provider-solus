@@ -102,7 +102,7 @@ resource "solus_os_image_version" "%[1]s" {
 }
 
 func testAccCheckOsImageVersionDestroy(s *terraform.State) error {
-	c := testAccProvider.Meta().(*solus.Client)
+	c := testAccProvider.Meta().(*client)
 
 	for _, rs := range s.RootModule().Resources {
 		switch rs.Type {

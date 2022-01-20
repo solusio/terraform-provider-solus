@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/solusio/solus-go-sdk"
 	"gopkg.in/guregu/null.v4"
 )
 
@@ -49,9 +48,27 @@ func newNullableIntForID(i int) null.Int {
 	return null.NewInt(int64(i), i != 0)
 }
 
+func listOfIDs(i interface{}) []int {
+	if i == nil {
+		return nil
+	}
+
+	vv := i.([]interface{}) //nolint:errcheck // We are sure about type.
+	if len(vv) == 0 {
+		return nil
+	}
+
+	res := make([]int, 0, len(vv))
+	for _, v := range vv {
+		res = append(res, v.(int))
+	}
+
+	return res
+}
+
 func adoptCreate(resourceName string, fn operationFunc) schema.CreateContextFunc {
 	return func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-		err := fn(ctx, m.(*solus.Client), d)
+		err := fn(ctx, m.(*client), d)
 		if err != nil {
 			err = fmt.Errorf("failed to create %s: %w", resourceName, err)
 		}
@@ -61,7 +78,7 @@ func adoptCreate(resourceName string, fn operationFunc) schema.CreateContextFunc
 
 func adoptRead(resourceName string, fn operationFunc) schema.ReadContextFunc {
 	return func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-		err := fn(ctx, m.(*solus.Client), d)
+		err := fn(ctx, m.(*client), d)
 		if err != nil {
 			err = fmt.Errorf("failed to read %s: %w", resourceName, err)
 		}
@@ -71,7 +88,7 @@ func adoptRead(resourceName string, fn operationFunc) schema.ReadContextFunc {
 
 func adoptUpdate(resourceName string, fn operationFunc) schema.UpdateContextFunc {
 	return func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-		err := fn(ctx, m.(*solus.Client), d)
+		err := fn(ctx, m.(*client), d)
 		if err != nil {
 			err = fmt.Errorf("failed to update %s: %w", resourceName, err)
 		}
@@ -81,7 +98,7 @@ func adoptUpdate(resourceName string, fn operationFunc) schema.UpdateContextFunc
 
 func adoptDelete(resourceName string, fn operationFunc) schema.DeleteContextFunc {
 	return func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-		err := fn(ctx, m.(*solus.Client), d)
+		err := fn(ctx, m.(*client), d)
 		if err != nil {
 			err = fmt.Errorf("failed to delete %s: %w", resourceName, err)
 		}
@@ -89,4 +106,4 @@ func adoptDelete(resourceName string, fn operationFunc) schema.DeleteContextFunc
 	}
 }
 
-type operationFunc func(ctx context.Context, client *solus.Client, d *schema.ResourceData) error
+type operationFunc func(ctx context.Context, client *client, d *schema.ResourceData) error

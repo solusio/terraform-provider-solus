@@ -40,7 +40,6 @@ type Client struct {
 	Projects          *ProjectsService
 	Roles             *RolesService
 	SSHKeys           *SSHKeysService
-	Servers           *ServersService
 	ServersMigrations *ServersMigrationsService
 	Settings          *SettingsService
 	Snapshots         *SnapshotsService
@@ -48,6 +47,7 @@ type Client struct {
 	StorageTypes      *StorageTypesService
 	Tasks             *TasksService
 	Users             *UsersService
+	VirtualServers    *VirtualServersService
 }
 
 type service struct {
@@ -176,7 +176,6 @@ func NewClient(
 	client.Projects = (*ProjectsService)(&client.s)
 	client.Roles = (*RolesService)(&client.s)
 	client.SSHKeys = (*SSHKeysService)(&client.s)
-	client.Servers = (*ServersService)(&client.s)
 	client.ServersMigrations = (*ServersMigrationsService)(&client.s)
 	client.Settings = (*SettingsService)(&client.s)
 	client.Snapshots = (*SnapshotsService)(&client.s)
@@ -184,6 +183,7 @@ func NewClient(
 	client.StorageTypes = (*StorageTypesService)(&client.s)
 	client.Tasks = (*TasksService)(&client.s)
 	client.Users = (*UsersService)(&client.s)
+	client.VirtualServers = (*VirtualServersService)(&client.s)
 
 	return client, nil
 }

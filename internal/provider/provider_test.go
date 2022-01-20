@@ -9,7 +9,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	"github.com/solusio/solus-go-sdk"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -32,7 +31,7 @@ func TestProvider(t *testing.T) {
 		p := New()
 		d := p.Configure(context.Background(), terraform.NewResourceConfigRaw(nil))
 		require.Nil(t, d)
-		assert.IsType(t, &solus.Client{}, p.Meta())
+		assert.IsType(t, &client{}, p.Meta())
 	})
 }
 

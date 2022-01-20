@@ -16,7 +16,7 @@ func dataSourceIPBlock() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Description:  "ID of the IP Block",
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {
@@ -30,7 +30,7 @@ func dataSourceIPBlock() *schema.Resource {
 	}
 }
 
-func dataSourceIPBlockRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func dataSourceIPBlockRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	var (
 		res solus.IPBlock
 		err error
@@ -58,7 +58,7 @@ func dataSourceIPBlockRead(ctx context.Context, client *solus.Client, d *schema.
 		Error()
 }
 
-func dataSourceIPBlockByName(ctx context.Context, client *solus.Client, name string) (solus.IPBlock, error) {
+func dataSourceIPBlockByName(ctx context.Context, client *client, name string) (solus.IPBlock, error) {
 	res, err := client.IPBlocks.List(ctx, new(solus.FilterIPBlocks).ByName(name))
 	if err != nil {
 		return solus.IPBlock{}, normalizeAPIError(err)

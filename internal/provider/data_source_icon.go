@@ -16,7 +16,7 @@ func dataSourceIcon() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Description:  "ID of the Icon",
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {
@@ -30,7 +30,7 @@ func dataSourceIcon() *schema.Resource {
 	}
 }
 
-func dataSourceIconRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func dataSourceIconRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	var (
 		res solus.Icon
 		err error
@@ -58,7 +58,7 @@ func dataSourceIconRead(ctx context.Context, client *solus.Client, d *schema.Res
 		Error()
 }
 
-func dataSourceIconReadByName(ctx context.Context, client *solus.Client, name string) (solus.Icon, error) {
+func dataSourceIconReadByName(ctx context.Context, client *client, name string) (solus.Icon, error) {
 	res, err := client.Icons.List(ctx, new(solus.FilterIcons).ByName(name))
 	if err != nil {
 		return solus.Icon{}, err

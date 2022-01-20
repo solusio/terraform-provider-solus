@@ -95,7 +95,7 @@ func resourceIPBlock() *schema.Resource {
 	}
 }
 
-func resourceIPBlockCreate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceIPBlockCreate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	req, err := buildIPBlockRequest(d)
 	if err != nil {
 		return fmt.Errorf("failed to build request: %w", err)
@@ -110,7 +110,7 @@ func resourceIPBlockCreate(ctx context.Context, client *solus.Client, d *schema.
 	return resourceIPBlockRead(ctx, client, d)
 }
 
-func resourceIPBlockRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceIPBlockRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func resourceIPBlockRead(ctx context.Context, client *solus.Client, d *schema.Re
 	return s.Error()
 }
 
-func resourceIPBlockUpdate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceIPBlockUpdate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -167,7 +167,7 @@ func resourceIPBlockUpdate(ctx context.Context, client *solus.Client, d *schema.
 	return resourceIPBlockRead(ctx, client, d)
 }
 
-func resourceIPBlockDelete(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceIPBlockDelete(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err

@@ -15,7 +15,7 @@ type Backup struct {
 	CreationMethod    BackupCreationMethod `json:"creation_method"`
 	Status            BackupStatus         `json:"status"`
 	Size              float32              `json:"size"`
-	ComputeResourceVM Server               `json:"compute_resource_vm"`
+	ComputeResourceVM VirtualServer        `json:"compute_resource_vm"`
 	BackupNode        BackupNode           `json:"backup_node"`
 	Creator           User                 `json:"creator"`
 	CreatedAt         string               `json:"created_at"`

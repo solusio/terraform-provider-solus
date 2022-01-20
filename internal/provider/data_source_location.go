@@ -16,7 +16,7 @@ func dataSourceLocation() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Description:  "ID of the Location",
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {
@@ -30,7 +30,7 @@ func dataSourceLocation() *schema.Resource {
 	}
 }
 
-func dataSourceLocationRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func dataSourceLocationRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	var (
 		res solus.Location
 		err error
@@ -58,7 +58,7 @@ func dataSourceLocationRead(ctx context.Context, client *solus.Client, d *schema
 		Error()
 }
 
-func dataSourceLocationByName(ctx context.Context, client *solus.Client, name string) (solus.Location, error) {
+func dataSourceLocationByName(ctx context.Context, client *client, name string) (solus.Location, error) {
 	res, err := client.Locations.List(ctx, new(solus.FilterLocations).ByName(name))
 	if err != nil {
 		return solus.Location{}, err

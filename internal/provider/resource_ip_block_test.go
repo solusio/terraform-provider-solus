@@ -151,7 +151,7 @@ resource "solus_ip_block" "%[1]s_ipv6" {
 }
 
 func testAccCheckIPBlockDestroy(s *terraform.State) error {
-	c := testAccProvider.Meta().(*solus.Client)
+	c := testAccProvider.Meta().(*client)
 
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "solus_ip_block" {

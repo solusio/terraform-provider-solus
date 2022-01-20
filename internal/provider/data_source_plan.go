@@ -16,7 +16,7 @@ func dataSourcePlan() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Description:  "ID of the Plan",
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {
@@ -30,7 +30,7 @@ func dataSourcePlan() *schema.Resource {
 	}
 }
 
-func dataSourcePlanRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func dataSourcePlanRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	var (
 		res solus.Plan
 		err error
@@ -58,7 +58,7 @@ func dataSourcePlanRead(ctx context.Context, client *solus.Client, d *schema.Res
 		Error()
 }
 
-func dataSourcePlanByName(ctx context.Context, client *solus.Client, name string) (solus.Plan, error) {
+func dataSourcePlanByName(ctx context.Context, client *client, name string) (solus.Plan, error) {
 	res, err := client.Plans.List(ctx, new(solus.FilterPlans).ByName(name))
 	if err != nil {
 		return solus.Plan{}, err

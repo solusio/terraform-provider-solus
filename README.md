@@ -26,9 +26,7 @@ make test
 Run acceptance tests:
 
 ```shell
-export SOLUS_BASE_URL="https://localhost/api/v1/"
-export SOLUS_TOKEN="..."
-export SOLUS_INSECURE=1
-
+cp .testacc.env.example .testacc.env
+vim .testacc.env
 make testacc
 ```

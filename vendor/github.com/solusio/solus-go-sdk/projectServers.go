@@ -8,16 +8,16 @@ import (
 // ProjectServersCreateRequest represents available properties for creating a new
 // server on a project.
 type ProjectServersCreateRequest struct {
-	Name             string                `json:"name"`
-	PlanID           int                   `json:"plan_id"`
-	LocationID       int                   `json:"location_id"`
-	OsImageVersionID int                   `json:"os_image_version_id,omitempty"`
-	ApplicationID    int                   `json:"application_id,omitempty"`
-	ApplicationData  string                `json:"application_data,omitempty"`
-	SSHKeys          []int                 `json:"ssh_keys,omitempty"`
-	UserData         string                `json:"user_data,omitempty"`
-	FQDNs            []string              `json:"fqdns,omitempty"`
-	BackupSettings   *ServerBackupSettings `json:"backup_settings,omitempty"`
+	Name             string                       `json:"name"`
+	PlanID           int                          `json:"plan_id"`
+	LocationID       int                          `json:"location_id"`
+	OsImageVersionID int                          `json:"os_image_version_id,omitempty"`
+	ApplicationID    int                          `json:"application_id,omitempty"`
+	ApplicationData  string                       `json:"application_data,omitempty"`
+	SSHKeys          []int                        `json:"ssh_keys,omitempty"`
+	UserData         string                       `json:"user_data,omitempty"`
+	FQDNs            []string                     `json:"fqdns,omitempty"`
+	BackupSettings   *VirtualServerBackupSettings `json:"backup_settings,omitempty"`
 }
 
 // ProjectServersResponse represents paginated list of project's servers.
@@ -25,7 +25,7 @@ type ProjectServersCreateRequest struct {
 type ProjectServersResponse struct {
 	paginatedResponse
 
-	Data []Server `json:"data"`
+	Data []VirtualServer `json:"data"`
 }
 
 // ServersCreate creates a server on the specified project.
@@ -33,22 +33,22 @@ func (s *ProjectsService) ServersCreate(
 	ctx context.Context,
 	projectID int,
 	data ProjectServersCreateRequest,
-) (Server, error) {
+) (VirtualServer, error) {
 	var resp struct {
-		Data Server `json:"data"`
+		Data VirtualServer `json:"data"`
 	}
 	return resp.Data, s.client.create(ctx, fmt.Sprintf("projects/%d/servers", projectID), data, &resp)
 }
 
 // ServersListAll lists all servers on the specified project.
 // Deprecated: use Servers instead.
-func (s *ProjectsService) ServersListAll(ctx context.Context, id int) ([]Server, error) {
+func (s *ProjectsService) ServersListAll(ctx context.Context, id int) ([]VirtualServer, error) {
 	resp, err := s.Servers(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	servers := make([]Server, len(resp.Data))
+	servers := make([]VirtualServer, len(resp.Data))
 	copy(servers, resp.Data)
 	for resp.Next(ctx) {
 		servers = append(servers, resp.Data...)

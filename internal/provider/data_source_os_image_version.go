@@ -16,14 +16,14 @@ func dataSourceOsImageVersion() *schema.Resource {
 				Type:          schema.TypeInt,
 				Optional:      true,
 				Description:   "ID of the OS Image Version",
-				ValidateFunc:  validation.NoZeroValues,
+				ValidateFunc:  validation.IntAtLeast(1),
 				ConflictsWith: []string{"os_image_id", "version"},
 			},
 			"os_image_id": {
 				Type:          schema.TypeInt,
 				Optional:      true,
 				Description:   "ID of the OS Image",
-				ValidateFunc:  validation.NoZeroValues,
+				ValidateFunc:  validation.IntAtLeast(1),
 				ConflictsWith: []string{"id"},
 				RequiredWith:  []string{"version"},
 			},
@@ -39,7 +39,7 @@ func dataSourceOsImageVersion() *schema.Resource {
 	}
 }
 
-func dataSourceOsImageVersionRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func dataSourceOsImageVersionRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	var (
 		res solus.OsImageVersion
 		err error
@@ -69,7 +69,7 @@ func dataSourceOsImageVersionRead(ctx context.Context, client *solus.Client, d *
 
 func dataSourceOsImageVersionReadByVersion(
 	ctx context.Context,
-	c *solus.Client,
+	c *client,
 	d *schema.ResourceData,
 ) (solus.OsImageVersion, error) {
 	osImageID := d.Get("os_image_id").(int)

@@ -60,7 +60,7 @@ resource "solus_os_image" "%s" {
 }
 
 func testAccCheckOsImageDestroy(s *terraform.State) error {
-	c := testAccProvider.Meta().(*solus.Client)
+	c := testAccProvider.Meta().(*client)
 
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "solus_os_image" {

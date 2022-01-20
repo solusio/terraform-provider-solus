@@ -16,7 +16,7 @@ func dataSourceOsImage() *schema.Resource {
 				Type:         schema.TypeInt,
 				Optional:     true,
 				Description:  "ID of the OS Image",
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 				ExactlyOneOf: []string{"id", "name"},
 			},
 			"name": {
@@ -30,7 +30,7 @@ func dataSourceOsImage() *schema.Resource {
 	}
 }
 
-func dataSourceOsImageRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func dataSourceOsImageRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	var (
 		res solus.OsImage
 		err error
@@ -58,7 +58,7 @@ func dataSourceOsImageRead(ctx context.Context, client *solus.Client, d *schema.
 		Error()
 }
 
-func dataSourceOSImageByName(ctx context.Context, client *solus.Client, name string) (solus.OsImage, error) {
+func dataSourceOSImageByName(ctx context.Context, client *client, name string) (solus.OsImage, error) {
 	res, err := client.OsImages.List(ctx, new(solus.FilterOsImages).ByName(name))
 	if err != nil {
 		return solus.OsImage{}, err

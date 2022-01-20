@@ -30,7 +30,7 @@ func resourceLocation() *schema.Resource {
 			"icon_id": {
 				Type:         schema.TypeInt,
 				Optional:     true,
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 			},
 			"is_default": {
 				Type:         schema.TypeBool,
@@ -48,7 +48,7 @@ func resourceLocation() *schema.Resource {
 	}
 }
 
-func resourceLocationCreate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceLocationCreate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	res, err := client.Locations.Create(ctx, buildLocationRequest(d))
 	if err != nil {
 		return normalizeAPIError(err)
@@ -58,7 +58,7 @@ func resourceLocationCreate(ctx context.Context, client *solus.Client, d *schema
 	return resourceLocationRead(ctx, client, d)
 }
 
-func resourceLocationRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceLocationRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func resourceLocationRead(ctx context.Context, client *solus.Client, d *schema.R
 		Error()
 }
 
-func resourceLocationUpdate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceLocationUpdate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -93,7 +93,7 @@ func resourceLocationUpdate(ctx context.Context, client *solus.Client, d *schema
 	return resourceLocationRead(ctx, client, d)
 }
 
-func resourceLocationDelete(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceLocationDelete(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err

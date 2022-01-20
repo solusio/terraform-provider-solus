@@ -25,7 +25,7 @@ func resourceOSImage() *schema.Resource {
 			"icon_id": {
 				Type:         schema.TypeInt,
 				Optional:     true,
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 			},
 			"is_visible": {
 				Type:         schema.TypeBool,
@@ -37,7 +37,7 @@ func resourceOSImage() *schema.Resource {
 	}
 }
 
-func resourceOSImageCreate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageCreate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	res, err := client.OsImages.Create(ctx, buildOSImageRequest(d))
 	if err != nil {
 		return normalizeAPIError(err)
@@ -47,7 +47,7 @@ func resourceOSImageCreate(ctx context.Context, client *solus.Client, d *schema.
 	return resourceOSImageRead(ctx, client, d)
 }
 
-func resourceOSImageRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func resourceOSImageRead(ctx context.Context, client *solus.Client, d *schema.Re
 		Error()
 }
 
-func resourceOSImageUpdate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageUpdate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -81,7 +81,7 @@ func resourceOSImageUpdate(ctx context.Context, client *solus.Client, d *schema.
 	return resourceOSImageRead(ctx, client, d)
 }
 
-func resourceOSImageDelete(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageDelete(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err

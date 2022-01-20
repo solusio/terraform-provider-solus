@@ -3,6 +3,11 @@ BINARY=terraform-provider-${NAME}
 HOOK=hooks/pre-commit/main.go
 LIST=`go list ./... | grep -v /hooks/pre-commit`
 
+ifneq (,$(wildcard ./.testacc.env))
+	include .testacc.env
+	export
+endif
+
 .PHONY: all
 all: fmt lint test build
 

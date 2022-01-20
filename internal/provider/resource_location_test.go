@@ -67,7 +67,7 @@ resource "solus_location" "%s" {
 }
 
 func testAccCheckLocationDestroy(s *terraform.State) error {
-	c := testAccProvider.Meta().(*solus.Client)
+	c := testAccProvider.Meta().(*client)
 
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "solus_location" {

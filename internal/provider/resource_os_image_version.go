@@ -22,7 +22,7 @@ func resourceOSImageVersion() *schema.Resource {
 				Type:         schema.TypeInt,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: validation.NoZeroValues,
+				ValidateFunc: validation.IntAtLeast(1),
 			},
 			"version": {
 				Type:         schema.TypeString,
@@ -58,7 +58,7 @@ func resourceOSImageVersion() *schema.Resource {
 	}
 }
 
-func resourceOSImageVersionCreate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageVersionCreate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	res, err := client.OsImages.CreateVersion(ctx, d.Get("os_image_id").(int), buildOSImageVersionRequest(d))
 	if err != nil {
 		return normalizeAPIError(err)
@@ -68,7 +68,7 @@ func resourceOSImageVersionCreate(ctx context.Context, client *solus.Client, d *
 	return resourceOSImageVersionRead(ctx, client, d)
 }
 
-func resourceOSImageVersionRead(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageVersionRead(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func resourceOSImageVersionRead(ctx context.Context, client *solus.Client, d *sc
 		Error()
 }
 
-func resourceOSImageVersionUpdate(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageVersionUpdate(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
@@ -104,7 +104,7 @@ func resourceOSImageVersionUpdate(ctx context.Context, client *solus.Client, d *
 	return resourceOSImageVersionRead(ctx, client, d)
 }
 
-func resourceOSImageVersionDelete(ctx context.Context, client *solus.Client, d *schema.ResourceData) error {
+func resourceOSImageVersionDelete(ctx context.Context, client *client, d *schema.ResourceData) error {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
