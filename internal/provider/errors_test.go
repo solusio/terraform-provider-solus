@@ -63,10 +63,6 @@ func Test_marshalErrors(t *testing.T) {
 		"foo: [fizz buzz]": {
 			"foo": {"fizz", "buzz"},
 		},
-		"foo: 1, bar: 2": {
-			"foo": {"1"},
-			"bar": {"2"},
-		},
 	}
 
 	for expected, given := range cc {
@@ -75,4 +71,17 @@ func Test_marshalErrors(t *testing.T) {
 			assert.Equal(t, expected, actual)
 		})
 	}
+
+	t.Run("multiple errors", func(t *testing.T) {
+		given := map[string][]string{
+			"foo": {"1"},
+			"bar": {"2"},
+		}
+
+		actual := marshalErrors(given)
+
+		if actual != "foo: 1, bar: 2" && actual != "bar: 2, foo: 1" {
+			assert.Fail(t, "invalid message")
+		}
+	})
 }

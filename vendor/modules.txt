@@ -166,7 +166,7 @@ github.com/oklog/run
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
-# github.com/solusio/solus-go-sdk v0.0.0-20220120092628-f9508942461d
+# github.com/solusio/solus-go-sdk v0.0.0-20220121044938-7c0b8af35d1c
 ## explicit; go 1.17
 github.com/solusio/solus-go-sdk
 # github.com/stretchr/testify v1.7.0

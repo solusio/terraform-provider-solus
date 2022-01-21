@@ -14,9 +14,17 @@ func dataSourceProject() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:         schema.TypeInt,
-				Required:     true,
+				Optional:     true,
 				Description:  "ID of the Project",
 				ValidateFunc: validation.IntAtLeast(1),
+				ExactlyOneOf: []string{"id", "name"},
+			},
+			"name": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "Name of the Project",
+				ValidateFunc: validation.NoZeroValues,
+				ExactlyOneOf: []string{"id", "name"},
 			},
 		},
 	}
@@ -28,9 +36,16 @@ func dataSourceProjectRead(ctx context.Context, client *client, d *schema.Resour
 		err error
 	)
 
-	if id, hasID := d.GetOk("id"); hasID {
+	id, hasID := d.GetOk("id")
+	name, hasName := d.GetOk("name")
+
+	switch {
+	case hasID:
 		res, err = client.Projects.Get(ctx, id.(int))
 		err = normalizeAPIError(err)
+
+	case hasName:
+		res, err = dataSourceProjectByName(ctx, client, name.(string))
 	}
 
 	if err != nil {
@@ -40,4 +55,21 @@ func dataSourceProjectRead(ctx context.Context, client *client, d *schema.Resour
 	return newSchemaChainSetter(d).
 		SetID(res.ID).
 		Error()
+}
+
+func dataSourceProjectByName(ctx context.Context, client *client, name string) (solus.Project, error) {
+	res, err := client.Projects.List(ctx, new(solus.FilterProjects).ByName(name))
+	if err != nil {
+		return solus.Project{}, err
+	}
+
+	if len(res.Data) == 1 {
+		return res.Data[0], nil
+	}
+
+	err = errResourceNotFound
+	if len(res.Data) > 1 {
+		err = errTooManyResults
+	}
+	return solus.Project{}, err
 }

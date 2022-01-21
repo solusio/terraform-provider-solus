@@ -292,6 +292,8 @@ github.com/sergi/go-diff v1.2.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNX
 github.com/sirupsen/logrus v1.4.1/go.mod h1:ni0Sbl8bgC9z8RoU9G6nDWqqs/fq4eDPysMBDgk/93Q=
 github.com/solusio/solus-go-sdk v0.0.0-20220120092628-f9508942461d h1:f1y9dX48TQ/Ojxm4kdOBA1a+GgXVhveza7BxP+DNV8c=
 github.com/solusio/solus-go-sdk v0.0.0-20220120092628-f9508942461d/go.mod h1:KwhFe8Y7nEYkc6XQQVLCHws7+9m+X74nCg6ogMKNEcA=
+github.com/solusio/solus-go-sdk v0.0.0-20220121044938-7c0b8af35d1c h1:/Ifn451HtQgXBSRRaRCZFpKmbIEnm7D9kRKC4guw114=
+github.com/solusio/solus-go-sdk v0.0.0-20220121044938-7c0b8af35d1c/go.mod h1:KwhFe8Y7nEYkc6XQQVLCHws7+9m+X74nCg6ogMKNEcA=
 github.com/spf13/pflag v1.0.2/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

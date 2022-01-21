@@ -41,13 +41,13 @@ func (s *ProjectsService) Create(ctx context.Context, data ProjectRequest) (Proj
 }
 
 // List lists projects.
-func (s *ProjectsService) List(ctx context.Context) (ProjectsResponse, error) {
+func (s *ProjectsService) List(ctx context.Context, filter *FilterProjects) (ProjectsResponse, error) {
 	resp := ProjectsResponse{
 		paginatedResponse: paginatedResponse{
 			service: (*service)(s),
 		},
 	}
-	return resp, s.client.list(ctx, "projects", &resp)
+	return resp, s.client.list(ctx, "projects", &resp, withFilter(filter.data))
 }
 
 // Get gets specified project.
