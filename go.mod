@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/hashicorp/terraform-plugin-log v0.2.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
-	github.com/solusio/solus-go-sdk v0.0.0-20220120092628-f9508942461d
+	github.com/solusio/solus-go-sdk v0.0.0-20220121044938-7c0b8af35d1c
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 	gopkg.in/guregu/null.v4 v4.0.0
