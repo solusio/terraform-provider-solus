@@ -90,6 +90,13 @@ func resourceVirtualServer() *schema.Resource {
 				ValidateFunc: validation.IntAtLeast(1),
 				RequiredWith: []string{"application_id"},
 			},
+			"ips": {
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -134,7 +141,15 @@ func resourceVirtualServerRead(ctx context.Context, client *client, d *schema.Re
 		SetID(res.ID).
 		Set("hostname", res.Name).
 		Set("description", res.Description).
+		Set("ips", extractIPAddresses(res.IPs)).
 		Error()
+}
+
+func extractIPAddresses(aa []solus.IPBlockIPAddress) (res []string) {
+	for _, a := range aa {
+		res = append(res, a.IP)
+	}
+	return
 }
 
 func resourceVirtualServerUpdate(ctx context.Context, client *client, d *schema.ResourceData) error {
