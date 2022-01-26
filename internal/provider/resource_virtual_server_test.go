@@ -43,6 +43,7 @@ func TestAccResourceVirtualServer(t *testing.T) {
 			resource.TestCheckResourceAttrSet(resName, "id"),
 			resource.TestCheckResourceAttr(resName, "hostname", hostname),
 			resource.TestCheckResourceAttr(resName, "description", description),
+			resource.TestCheckResourceAttrSet(resName, "ips.0"),
 		)
 	}
 
